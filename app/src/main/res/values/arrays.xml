@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="tasks">
+        <item></item>
+        <item>set a reminder</item>
+        <item>send a SMS</item>
+        <item>send an email</item>
+    </string-array>
+
+    <string-array name="digits">
+        <item></item>
+        <item>1</item>
+        <item>2</item>
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>100</item>
+        <item>200</item>
+        <item>500</item>
+    </string-array>
+
+    <string-array name="units">
+        <item></item>
+        <item>mins</item>
+        <item>ft</item>
+        <item>miles</item>
+    </string-array>
+
+    <string-array name="categories">
+        <item></item>
+        <item>Gas station</item>
+    </string-array>
+
+</resources>

@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Autometa</string>
+    <string name="title_activity_welcome">Home Screen</string>
+    <string name="next">NEXT</string>
+    <!--<string name="skip">SKIP</string>-->
+    <string name="start">GOT IT</string>
+
+    <string name="slide_1_title">Geo Reminders</string>
+    <string name="slide_1_desc">Location based reminders to help you remember buying milk and bread when you\'re near a grocery store!</string>
+
+    <string name="slide_2_title">Text Automation</string>
+    <string name="slide_2_desc">Text your friends auto-magically when you\'re 10 minutes away to notify them of your arrival at the cafe!</string>
+
+    <string name="slide_3_title">Email Automation</string>
+    <string name="slide_3_desc">Email your team about a delay in meeting if you\'re more than 10 minutes away from your meeting location!</string>
+
+    <string name="slide_4_title">Snooze / Cancel</string>
+    <string name="slide_4_desc">Set up a countdown in the settings menu to see a timer before automation is triggered and snooze or cancel it!</string>
+
+    <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
+    <string name="play_again">Play Again</string>
+
+    <string name="title_activity_splash">SplashActivity</string>
+
+    <string name="facebook_app_id">609163726125795</string>
+    <string name="fb_login_protocol_scheme">fb609163726125795</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_home">Home</string>
+    <string name="title_remind">Reminder</string>
+    <string name="title_notify">Notify</string>
+    <string name="title_activity_create">@string/app_name</string>
+    <string name="create_label1">I want to</string>
+    <string name="reminder_desc">Enter reminder description</string>
+    <string name="create_label2">to</string>
+    <string name="create_label3">when I am</string>
+    <string name="create_label4">from</string>
+
+</resources>
