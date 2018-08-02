@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>-->
     <color name="colorPrimary">#26a69a</color>
-    <color name="colorPrimaryDark">#009688</color>
+    <color name="colorPrimaryDark">#191919</color>
     <color name="colorAccent">#048b7a</color>
 
 
@@ -41,4 +41,5 @@
     </array>
 
     <color name="black_overlay">#66000000</color>
+    <color name="placeholder_bg">#dddddd</color>
 </resources>
