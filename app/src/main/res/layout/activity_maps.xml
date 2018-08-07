@@ -16,6 +16,34 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@color/bg_screen1"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textColor="#FFF"
+            android:layout_alignParentTop="true"
+            android:text="@string/confirm_lbl"
+            android:id="@+id/confirm"
+            android:padding="10dp"
+            android:layout_marginTop="20dp"
+            android:paddingLeft="10dp"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentEnd="true"
+            android:visibility="gone"
+            android:indeterminateTint="@color/bg_screen1"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:gravity="end|bottom"
             android:background="@color/bg_screen1"
@@ -23,7 +51,7 @@
             android:layout_alignParentEnd="true"
             android:textColor="#FFF"
             android:layout_alignParentBottom="true"
-            android:text="Search"
+            android:text="@string/search_lbl"
             android:id="@+id/search"
             android:padding="10dp"
             android:layout_marginTop="20dp"

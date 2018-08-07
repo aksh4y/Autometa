@@ -40,13 +40,16 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
     ConstraintLayout mLayout;
     AnimationDrawable animationDrawable;
     WaveLoadingView wlv;
-    Spinner task;
+    Spinner task, distance, units;
     FirebaseDatabase database;
     DatabaseReference myRef;
     Snackbar snackbar;
     View parentLayout;
     String userID;
     String contactName;
+    String userName;
+    String placeName;
+    int radius;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +57,7 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
         setContentView(R.layout.activity_set);
 
         Intent intent = getIntent();
-        final String userName = intent.getStringExtra("userName");
+        userName = intent.getStringExtra("userName");
         userID = intent.getStringExtra("uid");
 
         wlv = findViewById(R.id.wlv);
@@ -86,8 +89,9 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
             changeStatusBarColor();
 
         task = findViewById(R.id.spinner);
-        final Spinner distance = findViewById(R.id.spinner3);
-        final Spinner units = findViewById(R.id.spinner4);
+        distance = findViewById(R.id.spinner3);
+        units = findViewById(R.id.spinner4);
+        //perimeter = findViewById(R.id.spinner5);
         final EditText reminderDesc = findViewById(R.id.reminderDesc);
         Button goButton = findViewById(R.id.go);
         final Button contact = findViewById(R.id.contact);
@@ -104,15 +108,20 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
         units.setPopupBackgroundResource(R.color.bg_screen1);
         final ArrayAdapter<String> unitArray = new ArrayAdapter<>(this, R.layout.spinner_item, getResources().getStringArray(R.array.units));
         units.setAdapter(unitArray);
+        units.setEnabled(false);
+
+        /*perimeter.setPopupBackgroundResource(R.color.bg_screen1);
+        final ArrayAdapter<String> perimeterArray = new ArrayAdapter<>(this, R.layout.spinner_item, getResources().getStringArray(R.array.perimeter));
+        perimeter.setAdapter(perimeterArray);*/
 
         // Welcome Snackbar
         parentLayout = findViewById(android.R.id.content);
-        snackbar = Snackbar.make(parentLayout, "Welcome back Akshay!", Snackbar.LENGTH_LONG);
+        snackbar = Snackbar.make(parentLayout, "Welcome back " + userName + "!", Snackbar.LENGTH_LONG);
         // Changing action button text color
         View sbView = snackbar.getView();
         TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.parseColor("#ff4081"));
-       // snackbar.show();
+        snackbar.show();
 
 
         task.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -192,16 +201,74 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
                     snackbar.show();
                 }
                 else {
-                    Reminder reminder = new Reminder(rID, userID, userName, type, reminderDesc.getText().toString(), tvContactNumber.getText().toString(), tvContactNumber.getText().toString(), Integer.parseInt(distance.getSelectedItem().toString()), units.getSelectedItem().toString(), location);
+                    Reminder reminder = new Reminder(rID, userID, userName, type, reminderDesc.getText().toString(), tvContactNumber.getText().toString(), tvContactNumber.getText().toString(), Integer.parseInt(distance.getSelectedItem().toString()), units.getSelectedItem().toString(), location, placeName, false);
                     myRef.child(rID).setValue(reminder);
                 }
                 finish();
             }
         });
 
+        distance.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position != 0)
+                    units.setEnabled(true);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        units.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                switch (distance.getSelectedItemPosition()) {
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                        if(position == 1) {
+                            units.setSelection(0);
+                            snackbar = Snackbar.make(parentLayout, "Radius too small.", Snackbar.LENGTH_LONG);
+                            snackbar.show();
+                        }
+                        break;
+                    case 8:
+                    case 9:
+                    case 10:
+                        if(position == 2) {
+                            units.setSelection(0);
+                            snackbar = Snackbar.make(parentLayout, "Radius too big", Snackbar.LENGTH_LONG);
+                            snackbar.show();
+                        }
+                }
+
+                if(position != 0)
+                    progress += 10;
+                wlv.setProgressValue(progress);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) { }
+
+        });
+
         btn_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(distance.getSelectedItemPosition() == 0 || units.getSelectedItemPosition() == 0) {
+                    snackbar = Snackbar.make(parentLayout, "Select distance and unit first", Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                    return;
+                }
+                if(units.getSelectedItemPosition() == 1)
+                    radius = Integer.parseInt(distance.getSelectedItem().toString());
+                else
+                    radius = Integer.parseInt(distance.getSelectedItem().toString()) * 1000;
                 DialogActivity dialogActivity = new DialogActivity();
                 dialogActivity.show(getSupportFragmentManager(), "Pick your location");
                 /*PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
@@ -296,8 +363,9 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
     }
 
     @Override
-    public void setLocation(Place loc) {
+    public void setLocation(SudoPlace loc) {
         location = loc.getLatLng();
+        placeName= loc.getName();
         String toastMsg = String.format("Place: %s", loc.getName());
         snackbar = Snackbar.make(parentLayout, toastMsg, Snackbar.LENGTH_LONG);
         snackbar.show();

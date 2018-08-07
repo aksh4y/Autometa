@@ -1,6 +1,7 @@
 package com.akshaysadarangani.autometa;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import java.util.List;
 
 public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapter.MyViewHolder> {
     private Context context;
+    private View v;
     private List<Reminder> triggerList;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -23,6 +25,7 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
 
         public MyViewHolder(View view) {
             super(view);
+            v = view;
             delete = view.findViewById(R.id.delete);
             username = view.findViewById(R.id.username);
             description = view.findViewById(R.id.description);
@@ -57,7 +60,9 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
          holder.phone_email.setText(reminder.getEmail());
 
         holder.distance.setText(reminder.getDistance() + " " + reminder.getUnit());
-        holder.location.setText("Location: " + reminder.getLocation().latitude + ", " + reminder.getLocation().longitude);
+        holder.location.setText("Location: " + reminder.getPlaceName());
+        if(reminder.isCompleted())
+            v.setBackgroundColor(Color.parseColor("#88eb8d"));
 
         /*Glide.with(context)
                 .load(recipe.getThumbnail())

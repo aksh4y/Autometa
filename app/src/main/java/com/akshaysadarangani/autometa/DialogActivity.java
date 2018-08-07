@@ -19,15 +19,23 @@ import static android.app.Activity.RESULT_OK;
 public class DialogActivity extends AppCompatDialogFragment {
 
     Button location_choose, location_pick;
-    Place position;
+    SudoPlace position;
     DialogActivityListener listener;
     final int PLACE_PICKER_REQUEST = 1;
+    private static final int MAP_ACTIVITY_REQUEST_CODE = 0;
+    String userID, userName;
+    int radius;
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.location_picker, null);
+
+        SetActivity setActivity = (SetActivity) getActivity();
+        userID = setActivity.userID;
+        userName = setActivity.userName;
+        radius = setActivity.radius;
 
         builder.setView(view)
                 .setTitle("Pick Location")
@@ -40,7 +48,8 @@ public class DialogActivity extends AppCompatDialogFragment {
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        listener.setLocation(position);
+                        SudoPlace plc = new SudoPlace(position.getLatLng(), position.getName());
+                        listener.setLocation(plc);
                     }
                 });
 
@@ -65,7 +74,9 @@ public class DialogActivity extends AppCompatDialogFragment {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(getActivity(), MapsActivity.class);
-                DialogActivity.this.startActivity(myIntent);
+                myIntent.putExtra("uid", userID);
+                myIntent.putExtra("radius", radius);
+                DialogActivity.this.startActivityForResult(myIntent, MAP_ACTIVITY_REQUEST_CODE);
             }
         });
 
@@ -91,12 +102,19 @@ public class DialogActivity extends AppCompatDialogFragment {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(getContext(), data);
                 String toastMsg = String.format("Place: %s", place.getName());
-                position = place;
+                position = new SudoPlace(place.getLatLng(), place.getName().toString());
+            }
+        }
+        if (requestCode == MAP_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+
+                // get String data from Intent
+                position = data.getParcelableExtra("place");
             }
         }
     }
 
     public interface DialogActivityListener {
-        void setLocation(Place loc);
+        void setLocation(SudoPlace loc);
     }
 }

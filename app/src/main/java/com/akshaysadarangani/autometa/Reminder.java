@@ -14,10 +14,12 @@ public class Reminder {
     private String unit;
     private LatLng location;
     private String type;
+    private String placeName;
+    private boolean completed;
 
     public Reminder() {    }
 
-    public Reminder(String rid, String userID, String userName, String type, String description, String phone, String email, int distance, String unit, LatLng location){
+    public Reminder(String rid, String userID, String userName, String type, String description, String phone, String email, int distance, String unit, LatLng location, String placeName, boolean completed){
         this.rid = rid;
         this.userID = userID;
         this.userName = userName;
@@ -28,6 +30,9 @@ public class Reminder {
         this.distance = distance;
         this.unit = unit;
         this.location = location;
+        this.placeName = placeName;
+        this.completed = completed;
+
     }
 
     public String getType() {
@@ -101,6 +106,14 @@ public class Reminder {
     public void setLocation(LatLng location) {
         this.location = location;
     }
+
+    public String getPlaceName() { return placeName; }
+
+    public void setPlaceName(String placeName) { this.placeName = placeName; }
+
+    public boolean isCompleted() { return completed; }
+
+    public void setCompleted(boolean completed) { this.completed = completed; }
 
     public String getRid() {
         return rid;

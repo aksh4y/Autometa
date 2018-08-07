@@ -42,4 +42,5 @@
 
     <color name="black_overlay">#66000000</color>
     <color name="placeholder_bg">#dddddd</color>
+    <color name="completed_task">#88eb8d</color>
 </resources>

@@ -164,7 +164,9 @@ public class TriggersActivity extends AppCompatActivity {
                         LatLng location = new LatLng(
                                 d.child("location").child("latitude").getValue(Long.class),
                                 d.child("location").child("longitude").getValue(Long.class));
-                        Reminder r = new Reminder(rid, userID, userName, type, description, phone, email, distance, units, location);
+                        String placeName = d.child("placeName").getValue(String.class);
+                        boolean completed = d.child("completed").getValue(Boolean.class);
+                        Reminder r = new Reminder(rid, userID, userName, type, description, phone, email, distance, units, location, placeName, completed);
                         triggerList.add(r);
                         mAdapter.notifyItemInserted(triggerList.size() - 1);
                     }

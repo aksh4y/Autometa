@@ -15,7 +15,7 @@
         <item>10</item>
         <item>15</item>
         <item>30</item>
-        <item>60</item>
+        <item>50</item>
         <item>100</item>
         <item>200</item>
         <item>500</item>
@@ -24,15 +24,20 @@
     <string-array name="units">
         <item></item>
         <!--<item>mins</item>-->
-        <item>metres</item>
-        <item>miles</item>
+        <item>m</item>
+        <item>km</item>
+    </string-array>
+
+    <string-array name="perimeter">
+        <item></item>
+        <item>within</item>
+        <item>outside</item>
     </string-array>
 
     <string-array name="categories">
-        <item></item>
         <item>Bank</item>
         <item>Cafe</item>
-        <item>Gas station</item>
+        <item>Gas Station</item>
         <item>Hospital</item>
         <item>Laundry</item>
         <item>Library</item>
@@ -44,6 +49,7 @@
         <item>Restaurant</item>
         <item>School</item>
         <item>Shopping Mall</item>
+        <item>Subway Station</item>
         <item>Supermarket</item>
     </string-array>
 
