@@ -13,6 +13,36 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:gravity="end|bottom"
+            android:background="@color/bg_screen1"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:textColor="#FFF"
+            android:layout_alignParentBottom="true"
+            android:text="Search"
+            android:id="@+id/search"
+            android:padding="10dp"
+            android:layout_marginTop="20dp"
+            android:paddingRight="10dp"/>
+
+        <Spinner
+            android:id="@+id/categories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|bottom"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:background="@color/bg_screen1"
+            android:layout_alignParentBottom="true"
+            android:padding="10dp"
+            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
+            />
+
         <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

@@ -23,14 +23,28 @@
 
     <string-array name="units">
         <item></item>
-        <item>mins</item>
-        <item>ft</item>
+        <!--<item>mins</item>-->
+        <item>metres</item>
         <item>miles</item>
     </string-array>
 
     <string-array name="categories">
         <item></item>
+        <item>Bank</item>
+        <item>Cafe</item>
         <item>Gas station</item>
+        <item>Hospital</item>
+        <item>Laundry</item>
+        <item>Library</item>
+        <item>Movie Theatre</item>
+        <item>Nightclub</item>
+        <item>Park</item>
+        <item>Pharmacy</item>
+        <item>Post Office</item>
+        <item>Restaurant</item>
+        <item>School</item>
+        <item>Shopping Mall</item>
+        <item>Supermarket</item>
     </string-array>
 
 </resources>

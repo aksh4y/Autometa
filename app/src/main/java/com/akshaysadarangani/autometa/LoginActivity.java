@@ -304,7 +304,7 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
     public void pairDevice(FirebaseUser user) {
-        Intent myIntent = new Intent(LoginActivity.this, SetActivity.class);
+        Intent myIntent = new Intent(LoginActivity.this, TriggersActivity.class);
         myIntent.putExtra("userName", user.getDisplayName());
         myIntent.putExtra("uid", user.getUid());
         LoginActivity.this.startActivity(myIntent);

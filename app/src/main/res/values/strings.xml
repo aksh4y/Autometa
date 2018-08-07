@@ -34,5 +34,7 @@
     <string name="create_label2">to</string>
     <string name="create_label3">when I am</string>
     <string name="create_label4">from</string>
+    <string name="location_category_lbl">Choose location category</string>
+    <string name="location_picker_lbl">Pick a location manually</string>
 
 </resources>

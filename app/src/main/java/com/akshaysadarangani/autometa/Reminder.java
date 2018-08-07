@@ -4,7 +4,8 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class Reminder {
 
-    private int id;
+    private String rid;
+    private String userID;
     private String userName;
     private String description;
     private String phone;
@@ -12,15 +13,37 @@ public class Reminder {
     private int distance;
     private String unit;
     private LatLng location;
+    private String type;
 
     public Reminder() {    }
 
-    public int getId() {
-        return id;
+    public Reminder(String rid, String userID, String userName, String type, String description, String phone, String email, int distance, String unit, LatLng location){
+        this.rid = rid;
+        this.userID = userID;
+        this.userName = userName;
+        this.type = type;
+        this.description = description;
+        this.phone = phone;
+        this.email = email;
+        this.distance = distance;
+        this.unit = unit;
+        this.location = location;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public String getUserName() {
@@ -77,5 +100,13 @@ public class Reminder {
 
     public void setLocation(LatLng location) {
         this.location = location;
+    }
+
+    public String getRid() {
+        return rid;
+    }
+
+    public void setRid(String rid) {
+        this.rid = rid;
     }
 }

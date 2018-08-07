@@ -9,6 +9,7 @@ import android.os.Build;
 import android.provider.ContactsContract;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.Explode;
@@ -22,37 +23,46 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import android.widget.TextView;import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
-
+import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import me.itangqi.waveloadingview.WaveLoadingView;
 
-public class SetActivity extends AppCompatActivity {
+public class SetActivity extends AppCompatActivity implements DialogActivity.DialogActivityListener {
 
     final int RESULT_PICK_CONTACT = 1001;
     final int PLACE_PICKER_REQUEST = 1;
     int progress = 1;
     TextView tvContactNumber;
-
+    LatLng location;
     ConstraintLayout mLayout;
     AnimationDrawable animationDrawable;
     WaveLoadingView wlv;
+    Spinner task;
+    FirebaseDatabase database;
+    DatabaseReference myRef;
+    Snackbar snackbar;
+    View parentLayout;
+    String userID;
+    String contactName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set);
 
-        wlv = findViewById(R.id.wlv);
+        Intent intent = getIntent();
+        final String userName = intent.getStringExtra("userName");
+        userID = intent.getStringExtra("uid");
 
+        wlv = findViewById(R.id.wlv);
         wlv.setProgressValue(progress);
         wlv.startAnimation();
+
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("tasks");
 
         mLayout = findViewById(R.id.mLayout);
         animationDrawable = (AnimationDrawable) mLayout.getBackground();
@@ -70,31 +80,42 @@ public class SetActivity extends AppCompatActivity {
             getWindow().setAllowEnterTransitionOverlap(false);
         }
 
+        location = null;
+
         if (Build.VERSION.SDK_INT >= 21)
             changeStatusBarColor();
 
-        Spinner spinner = findViewById(R.id.spinner);
-        Spinner digits = findViewById(R.id.spinner3);
-        Spinner units = findViewById(R.id.spinner4);
+        task = findViewById(R.id.spinner);
+        final Spinner distance = findViewById(R.id.spinner3);
+        final Spinner units = findViewById(R.id.spinner4);
         final EditText reminderDesc = findViewById(R.id.reminderDesc);
         Button goButton = findViewById(R.id.go);
         final Button contact = findViewById(R.id.contact);
         Button btn_location = findViewById(R.id.btn_location);
         tvContactNumber = findViewById(R.id.numberView);
-        spinner.setPopupBackgroundResource(R.color.bg_screen1);
+        task.setPopupBackgroundResource(R.color.bg_screen1);
         final ArrayAdapter<String> eventType = new ArrayAdapter<>(this, R.layout.spinner_item, getResources().getStringArray(R.array.tasks));
-        spinner.setAdapter(eventType);
+        task.setAdapter(eventType);
 
-        digits.setPopupBackgroundResource(R.color.bg_screen1);
+        distance.setPopupBackgroundResource(R.color.bg_screen1);
         final ArrayAdapter<String> digitArray = new ArrayAdapter<>(this, R.layout.spinner_item, getResources().getStringArray(R.array.digits));
-        digits.setAdapter(digitArray);
+        distance.setAdapter(digitArray);
 
         units.setPopupBackgroundResource(R.color.bg_screen1);
         final ArrayAdapter<String> unitArray = new ArrayAdapter<>(this, R.layout.spinner_item, getResources().getStringArray(R.array.units));
         units.setAdapter(unitArray);
 
+        // Welcome Snackbar
+        parentLayout = findViewById(android.R.id.content);
+        snackbar = Snackbar.make(parentLayout, "Welcome back Akshay!", Snackbar.LENGTH_LONG);
+        // Changing action button text color
+        View sbView = snackbar.getView();
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.parseColor("#ff4081"));
+       // snackbar.show();
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+        task.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 if(position != 0)
@@ -120,8 +141,18 @@ public class SetActivity extends AppCompatActivity {
         contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
-                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                Intent contactPickerIntent;
+                switch (task.getSelectedItemPosition()) {
+                    case 2:
+                        contactPickerIntent = new Intent(Intent.ACTION_PICK,
+                                ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                        break;
+                    case 3:
+                        contactPickerIntent = new Intent(Intent.ACTION_PICK,
+                                ContactsContract.CommonDataKinds.Email.CONTENT_URI);
+                        break;
+                    default: return;
+                }
                 startActivityForResult(contactPickerIntent, RESULT_PICK_CONTACT);
             }
         });
@@ -129,22 +160,58 @@ public class SetActivity extends AppCompatActivity {
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent myIntent = new Intent(SetActivity.this, TriggersActivity.class);
-                SetActivity.this.startActivity(myIntent);
+                String type = null;
+                switch(task.getSelectedItemPosition()) {
+                    case 1:
+                        if(reminderDesc.getText().toString().isEmpty())
+                            return;
+                        type = "REMINDER";
+                        break;
+                    case 2:
+                        if(tvContactNumber.getText().toString().isEmpty())
+                            return;
+                        reminderDesc.setText("Send SMS to " + contactName);
+                        type = "SMS";
+                        break;
+                    case 3:
+                        if(tvContactNumber.getText().toString().isEmpty())
+                            return;
+                        reminderDesc.setText("Send email to " + contactName);
+                        type = "EMAIL";
+                        break;
+                    default: return;
+                }
+
+                if(distance.getSelectedItemPosition() == 0 || units.getSelectedItemPosition() == 0 || location == null)
+                    return;
+
+                // Write to the database
+                String rID = myRef.push().getKey();
+                if(rID == null) {
+                    snackbar = Snackbar.make(parentLayout, "An error has occurred. Try again later.", Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                }
+                else {
+                    Reminder reminder = new Reminder(rID, userID, userName, type, reminderDesc.getText().toString(), tvContactNumber.getText().toString(), tvContactNumber.getText().toString(), Integer.parseInt(distance.getSelectedItem().toString()), units.getSelectedItem().toString(), location);
+                    myRef.child(rID).setValue(reminder);
+                }
+                finish();
             }
         });
 
         btn_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                DialogActivity dialogActivity = new DialogActivity();
+                dialogActivity.show(getSupportFragmentManager(), "Pick your location");
+                /*PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
                 try {
                     startActivityForResult(builder.build(SetActivity.this), PLACE_PICKER_REQUEST);
                 } catch (GooglePlayServicesRepairableException e) {
                     e.printStackTrace();
                 } catch (GooglePlayServicesNotAvailableException e) {
                     e.printStackTrace();
-                }
+                }*/
             }
         });
     }
@@ -158,7 +225,8 @@ public class SetActivity extends AppCompatActivity {
                     Cursor cursor = null;
                     try {
                         String contactNumber = null;
-                        //String contactName = null;
+                        String contactEmail = null;
+                        contactName = null;
                         // getData() method will have the
                         // Content Uri of the selected contact
                         Uri uri = data.getData();
@@ -176,9 +244,25 @@ public class SetActivity extends AppCompatActivity {
                         contactNumber = cursor.getString(phoneIndex);
                         int emailIndex = cursor.getColumnIndex(
                                 ContactsContract.CommonDataKinds.Email.ADDRESS);
-                        //contactName = cursor.getString(nameIndex);
-                        tvContactNumber.setText(contactNumber);
+                        contactEmail = cursor.getString(emailIndex);
+                        contactName = cursor.getString(nameIndex);
+                        if(task.getSelectedItemPosition() == 2 && contactNumber == null) {
+                            snackbar = Snackbar.make(parentLayout, "Could not pick contact number. Check the contact.", Snackbar.LENGTH_LONG);
+                            snackbar.show();
+                            return;
+                        }
+                        else
+                            tvContactNumber.setText(contactNumber);
+                        if(task.getSelectedItemPosition() == 3 && contactEmail == null) {
+                            snackbar = Snackbar.make(parentLayout, "Could not pick contact email. Check the contact.", Snackbar.LENGTH_LONG);
+                            snackbar.show();
+                            return;
+                        }
+                        else
+                            tvContactNumber.setText(contactEmail);
                         cursor.close();
+                        snackbar = Snackbar.make(parentLayout, "Contact: " + contactName, Snackbar.LENGTH_LONG);
+                        snackbar.show();
                         progress += 25;
                         wlv.setProgressValue(progress);
                     } catch (Exception e) {
@@ -192,8 +276,10 @@ public class SetActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(this, data);
                 String toastMsg = String.format("Place: %s", place.getName());
-                //place.getLatLng().latitude
-                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+                location = place.getLatLng();
+                snackbar = Snackbar.make(parentLayout, toastMsg, Snackbar.LENGTH_LONG);
+                snackbar.show();
+                //Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
                 progress += 25;
                 wlv.setProgressValue(progress);
             }
@@ -207,5 +293,16 @@ public class SetActivity extends AppCompatActivity {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(Color.TRANSPARENT);
 
+    }
+
+    @Override
+    public void setLocation(Place loc) {
+        location = loc.getLatLng();
+        String toastMsg = String.format("Place: %s", loc.getName());
+        snackbar = Snackbar.make(parentLayout, toastMsg, Snackbar.LENGTH_LONG);
+        snackbar.show();
+        //Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+        progress += 25;
+        wlv.setProgressValue(progress);
     }
 }

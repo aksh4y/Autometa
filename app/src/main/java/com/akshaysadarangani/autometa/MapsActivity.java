@@ -1,11 +1,13 @@
 package com.akshaysadarangani.autometa;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -13,8 +15,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
@@ -22,14 +29,17 @@ import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+
 import android.location.LocationListener;
 import android.location.LocationManager;
+
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -37,8 +47,23 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private GoogleMap mMap;
+    Button search;
 
     // Play Services Location
     private static final int MY_PERMISSION_REQUEST_CODE = 271192;
@@ -73,6 +98,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        search = findViewById(R.id.search);
+        final Spinner categories = findViewById(R.id.categories);
+        final ArrayAdapter<String> cats = new ArrayAdapter<>(this, R.layout.spinner_item, getResources().getStringArray(R.array.categories));
+        categories.setAdapter(cats);
+
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         mo = new MarkerOptions().position(new LatLng(0, 0)).title("My Current Location");
         if (Build.VERSION.SDK_INT >= 23 && !isPermissionGranted()) {
@@ -85,6 +115,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         geoFire = new GeoFire(ref);
 
         setUpLocation();
+
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("Search", "btn_press");
+                StringBuilder sbValue = new StringBuilder(sbMethod(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+                PlacesTask placesTask = new PlacesTask();
+                placesTask.execute(sbValue.toString());
+            }
+        });
     }
 
     private void setUpLocation() {
@@ -204,9 +244,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return true;
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        if(isPermissionGranted())
+            mMap.setMyLocationEnabled(true);
         marker =  mMap.addMarker(mo);
 
        /* // Add a marker in Sydney and move the camera
@@ -219,7 +262,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         displayLocation();
-       // startLocationUpdates();
+        // startLocationUpdates();
     }
 
     private void startLocationUpdates() {
@@ -313,5 +356,230 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    public StringBuilder sbMethod(double mLatitude, double mLongitude) {
+
+
+        StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        sb.append("location=" + mLatitude + "," + mLongitude);
+        sb.append("&radius=5000");
+        sb.append("&type=" + "restaurant");
+        sb.append("&sensor=true");
+        sb.append("&key=AIzaSyBPxTDj2IDJAg_QBXthG59-L6c9AddxP_k");
+
+        Log.d("Map", "api: " + sb.toString());
+
+        return sb;
+    }
+
+    private class PlacesTask extends AsyncTask<String, Integer, String> {
+
+        String data = null;
+
+        // Invoked by execute() method of this object
+        @Override
+        protected String doInBackground(String... url) {
+            try {
+                data = downloadUrl(url[0]);
+            } catch (Exception e) {
+                Log.d("Background Task", e.toString());
+            }
+            return data;
+        }
+
+        // Executed after the complete execution of doInBackground() method
+        @Override
+        protected void onPostExecute(String result) {
+            ParserTask parserTask = new ParserTask();
+
+            // Start parsing the Google places in JSON format
+            // Invokes the "doInBackground()" method of the class ParserTask
+            parserTask.execute(result);
+        }
+
+        private String downloadUrl(String strUrl) throws IOException {
+            String data = "";
+            InputStream iStream = null;
+            HttpURLConnection urlConnection = null;
+            try {
+                URL url = new URL(strUrl);
+
+                // Creating an http connection to communicate with url
+                urlConnection = (HttpURLConnection) url.openConnection();
+
+                // Connecting to url
+                urlConnection.connect();
+
+                // Reading data from url
+                iStream = urlConnection.getInputStream();
+
+                BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
+
+                StringBuffer sb = new StringBuffer();
+
+                String line = "";
+                while ((line = br.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                data = sb.toString();
+
+                br.close();
+
+            } catch (Exception e) {
+                Log.d("Error downloading url", e.toString());
+            } finally {
+                iStream.close();
+                urlConnection.disconnect();
+            }
+            return data;
+        }
+    }
+
+    private class ParserTask extends AsyncTask<String, Integer, List<HashMap<String, String>>> {
+
+        JSONObject jObject;
+
+        // Invoked by execute() method of this object
+        @Override
+        protected List<HashMap<String, String>> doInBackground(String... jsonData) {
+
+            List<HashMap<String, String>> places = null;
+            Place_JSON placeJson = new Place_JSON();
+
+            try {
+                jObject = new JSONObject(jsonData[0]);
+
+                places = placeJson.parse(jObject);
+
+            } catch (Exception e) {
+                Log.d("Exception", e.toString());
+            }
+            return places;
+        }
+
+        // Executed after the complete execution of doInBackground() method
+        @Override
+        protected void onPostExecute(List<HashMap<String, String>> list) {
+
+            Log.d("Map", "list size: " + list.size());
+            // Clears all the existing markers;
+            mMap.clear();
+
+            for (int i = 0; i < list.size(); i++) {
+
+                // Creating a marker
+                MarkerOptions markerOptions = new MarkerOptions();
+
+                // Getting a place from the places list
+                HashMap<String, String> hmPlace = list.get(i);
+
+
+                // Getting latitude of the place
+                double lat = Double.parseDouble(hmPlace.get("lat"));
+
+                // Getting longitude of the place
+                double lng = Double.parseDouble(hmPlace.get("lng"));
+
+                // Getting name
+                String name = hmPlace.get("place_name");
+
+                Log.d("Map", "place: " + name);
+
+                // Getting vicinity
+                String vicinity = hmPlace.get("vicinity");
+
+                LatLng latLng = new LatLng(lat, lng);
+
+                // Setting the position for the marker
+                markerOptions.position(latLng);
+
+                markerOptions.title(name + " : " + vicinity);
+
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+
+                // Placing a marker on the touched position
+                Marker m = mMap.addMarker(markerOptions);
+
+            }
+        }
+    }
+    public class Place_JSON {
+
+        /**
+         * Receives a JSONObject and returns a list
+         */
+        public List<HashMap<String, String>> parse(JSONObject jObject) {
+
+            JSONArray jPlaces = null;
+            try {
+                /** Retrieves all the elements in the 'places' array */
+                jPlaces = jObject.getJSONArray("results");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            /** Invoking getPlaces with the array of json object
+             * where each json object represent a place
+             */
+            return getPlaces(jPlaces);
+        }
+
+        private List<HashMap<String, String>> getPlaces(JSONArray jPlaces) {
+            int placesCount = jPlaces.length();
+            List<HashMap<String, String>> placesList = new ArrayList<HashMap<String, String>>();
+            HashMap<String, String> place = null;
+
+            /** Taking each place, parses and adds to list object */
+            for (int i = 0; i < placesCount; i++) {
+                try {
+                    /** Call getPlace with place JSON object to parse the place */
+                    place = getPlace((JSONObject) jPlaces.get(i));
+                    placesList.add(place);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return placesList;
+        }
+
+        /**
+         * Parsing the Place JSON object
+         */
+        private HashMap<String, String> getPlace(JSONObject jPlace) {
+
+            HashMap<String, String> place = new HashMap<String, String>();
+            String placeName = "-NA-";
+            String vicinity = "-NA-";
+            String latitude = "";
+            String longitude = "";
+            String reference = "";
+
+            try {
+                // Extracting Place name, if available
+                if (!jPlace.isNull("name")) {
+                    placeName = jPlace.getString("name");
+                }
+
+                // Extracting Place Vicinity, if available
+                if (!jPlace.isNull("vicinity")) {
+                    vicinity = jPlace.getString("vicinity");
+                }
+
+                latitude = jPlace.getJSONObject("geometry").getJSONObject("location").getString("lat");
+                longitude = jPlace.getJSONObject("geometry").getJSONObject("location").getString("lng");
+                reference = jPlace.getString("reference");
+
+                place.put("place_name", placeName);
+                place.put("vicinity", vicinity);
+                place.put("lat", latitude);
+                place.put("lng", longitude);
+                place.put("reference", reference);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return place;
+        }
     }
 }

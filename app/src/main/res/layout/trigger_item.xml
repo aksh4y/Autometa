@@ -15,6 +15,15 @@
         android:background="@drawable/ic_reminder"
         android:scaleType="centerCrop" />
 
+    <ImageView
+        android:id="@+id/delete"
+        android:layout_width="@dimen/placeholder_image"
+        android:layout_height="@dimen/placeholder_image"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
+        android:background="@mipmap/ic_delete"
+        android:scaleType="centerCrop" />
+
     <TextView
         android:id="@+id/description"
         android:layout_width="wrap_content"
@@ -37,13 +46,12 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/phone"
+        android:id="@+id/phone_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/username"
         android:layout_toRightOf="@id/thumbnail"
         android:maxLines="1"
-        android:text="2 min ago"
         android:textColor="#777"
         android:textSize="11sp" />
 
@@ -63,6 +71,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/thumbnail"
+        android:textAlignment="center"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/colorPrimary"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/phone_email"
+        android:layout_toRightOf="@id/thumbnail"
         android:textAlignment="center"
         android:layout_marginTop="10dp"
         android:textColor="@color/colorPrimary"

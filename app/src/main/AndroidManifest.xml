@@ -104,6 +104,7 @@
             android:name=".DoneActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".TriggersActivity" />
+        <activity android:name=".DialogActivity"></activity>
     </application>
 
 </manifest>
