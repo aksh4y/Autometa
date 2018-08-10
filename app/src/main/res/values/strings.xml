@@ -39,5 +39,36 @@
     <string name="btn_location_lbl">Location</string>
     <string name="search_lbl">Search</string>
     <string name="confirm_lbl">Confirm</string>
+    <string name="title_activity_plot">View All Triggers</string>
+    <string name="title_activity_maps2">Map</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="permission_rationale">Location permission is needed for core functionality</string>
+    <string name="permission_denied_explanation">Permission was denied, but is needed for core functionality.</string>
+    <string name="insufficient_permissions">Permission Denied.</string>
+    <string name="settings">Settings</string>
+
+    <!-- Geofences -->
+    <string name="geofences_added">Geofences added</string>
+    <string name="geofences_removed">Geofences removed</string>
+    <!-- Transition type strings -->
+    <string name="geofence_transition_entered">Entered</string>
+    <string name="geofence_transition_exited">Exited</string>
+    <string name="unknown_geofence_transition">Unknown Transition</string>
+    <string name="geofence_transition_notification_text">
+        Click notification to return to app
+    </string>
+
+    <!-- Geofence errors -->
+    <string name="geofence_not_available">Geofence service is not available now</string>
+    <string name="geofence_too_many_geofences">Your app has registered too many geofences</string>
+    <string name="geofence_too_many_pending_intents">
+        You have provided too many PendingIntents to the addGeofences() call
+    </string>
+    <string name="unknown_geofence_error">
+        Unknown error: the Geofence service is not available now
+    </string>
+    <string name="geofence_transition_invalid_type">
+        Geofence transition error: invalid transition type %1$d
+    </string>
 
 </resources>

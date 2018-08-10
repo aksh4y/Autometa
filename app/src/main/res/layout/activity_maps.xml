@@ -71,7 +71,7 @@
             android:paddingStart="10dp"
             />
 
-        <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
+        <!--<com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginBottom="8dp"
@@ -87,7 +87,7 @@
                 android:splitTrack="false"
                 app:seekBarRotation="CW270"
                 />
-        </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
+        </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>-->
 
 
     </RelativeLayout>

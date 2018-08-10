@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.firebase.geofire.GeoFire;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -76,8 +78,20 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
                 Reminder reminder = triggerList.get(pos);
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("tasks");
+                GeoFire geoFire = new GeoFire(myRef);
                 String rid = reminder.getRid();
                 myRef.child(rid).removeValue();
+                geoFire = new GeoFire(myRef.child(rid));
+                geoFire.removeLocation(reminder.getPlaceName(), new GeoFire.CompletionListener() {
+                    @Override
+                    public void onComplete(String key, DatabaseError error) {
+                        if (error != null) {
+                            System.err.println("There was an error removing the location to GeoFire: " + error);
+                        } else {
+                            System.out.println("Location removed on server successfully!");
+                        }
+                    }
+                });
                 triggerList.remove(pos);
                 notifyItemRemoved(pos);
                 notifyItemRangeChanged(pos, triggerList.size());

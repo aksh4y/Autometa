@@ -1,4 +1,4 @@
-package com.akshaysadarangani.autometa;
+package com.akshaysadarangani.autometa.services;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -12,6 +12,8 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.akshaysadarangani.autometa.MapActivity;
+import com.akshaysadarangani.autometa.R;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingEvent;
@@ -59,6 +61,7 @@ public class GeofenceTransitionService extends IntentService {
         // get the ID of each geofence triggered
         ArrayList<String> triggeringGeofencesList = new ArrayList<>();
         for ( Geofence geofence : triggeringGeofences ) {
+            Log.e("GEO", geofence.getRequestId());
             triggeringGeofencesList.add( geofence.getRequestId() );
         }
 

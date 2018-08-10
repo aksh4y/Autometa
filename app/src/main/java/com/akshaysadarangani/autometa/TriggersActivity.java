@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.firebase.geofire.GeoFire;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -64,10 +65,22 @@ public class TriggersActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
 
         FloatingActionButton fab = findViewById(R.id.fab);
+        FloatingActionButton fab2 = findViewById(R.id.fab2);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(TriggersActivity.this, SetActivity.class);
+                myIntent.putExtra("userName", userName);
+                myIntent.putExtra("uid", userID);
+                TriggersActivity.this.startActivity(myIntent);
+            }
+        });
+
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(TriggersActivity.this, MapActivity.class);
                 myIntent.putExtra("userName", userName);
                 myIntent.putExtra("uid", userID);
                 TriggersActivity.this.startActivity(myIntent);

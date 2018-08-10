@@ -1,4 +1,4 @@
-package com.akshaysadarangani.autometa;
+package com.akshaysadarangani.autometa.receivers;
 
 /**
  * Created by Akshay on 8/4/2018.
@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+
+import com.akshaysadarangani.autometa.MyApplication;
 
 public class ConnectivityReceiver extends BroadcastReceiver {
 

@@ -19,7 +19,7 @@ import static android.app.Activity.RESULT_OK;
 public class DialogActivity extends AppCompatDialogFragment {
 
     Button location_choose, location_pick;
-    SudoPlace position;
+    SudoPlace position = null;
     DialogActivityListener listener;
     final int PLACE_PICKER_REQUEST = 1;
     private static final int MAP_ACTIVITY_REQUEST_CODE = 0;
@@ -48,8 +48,10 @@ public class DialogActivity extends AppCompatDialogFragment {
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        SudoPlace plc = new SudoPlace(position.getLatLng(), position.getName());
-                        listener.setLocation(plc);
+                        if(position != null) {
+                            SudoPlace plc = new SudoPlace(position.getLatLng(), position.getName());
+                            listener.setLocation(plc);
+                        }
                     }
                 });
 

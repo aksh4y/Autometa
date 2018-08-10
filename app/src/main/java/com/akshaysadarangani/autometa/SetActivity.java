@@ -1,5 +1,6 @@
 package com.akshaysadarangani.autometa;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -23,17 +24,26 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;import com.google.android.gms.location.places.Place;
+import android.widget.TextView;
+import com.firebase.geofire.GeoFire;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import java.util.ArrayList;
 import me.itangqi.waveloadingview.WaveLoadingView;
+
 
 public class SetActivity extends AppCompatActivity implements DialogActivity.DialogActivityListener {
 
     final int RESULT_PICK_CONTACT = 1001;
     final int PLACE_PICKER_REQUEST = 1;
+    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
     int progress = 1;
     TextView tvContactNumber;
     LatLng location;
@@ -50,6 +60,27 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
     String userName;
     String placeName;
     int radius;
+    GeoFire geoFire;
+    private enum PendingGeofenceTask {
+        ADD, REMOVE, NONE
+    }
+
+    /**
+     * Provides access to the Geofencing API.
+     */
+    private GeofencingClient mGeofencingClient;
+
+    /**
+     * The list of geofences used in this sample.
+     */
+    private ArrayList<Geofence> mGeofenceList;
+
+    /**
+     * Used when requesting to add or remove geofences.
+     */
+    private PendingIntent mGeofencePendingIntent;
+
+    private PendingGeofenceTask mPendingGeofenceTask = PendingGeofenceTask.NONE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +97,7 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("tasks");
+        geoFire = new GeoFire(myRef);
 
         mLayout = findViewById(R.id.mLayout);
         animationDrawable = (AnimationDrawable) mLayout.getBackground();
@@ -122,7 +154,6 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
         TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.parseColor("#ff4081"));
         snackbar.show();
-
 
         task.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -203,6 +234,18 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
                 else {
                     Reminder reminder = new Reminder(rID, userID, userName, type, reminderDesc.getText().toString(), tvContactNumber.getText().toString(), tvContactNumber.getText().toString(), Integer.parseInt(distance.getSelectedItem().toString()), units.getSelectedItem().toString(), location, placeName, false);
                     myRef.child(rID).setValue(reminder);
+                    /*geoFire = new GeoFire(myRef.child(rID));
+                    geoFire.setLocation(rID, new GeoLocation(location.latitude, location.longitude), new GeoFire.CompletionListener() {
+                        @Override
+                        public void onComplete(String key, DatabaseError error) {
+                            if (error != null) {
+                                System.err.println("There was an error saving the location to GeoFire: " + error);
+                            } else {
+                                System.out.println("Location saved on server successfully!");
+                            }
+                        }
+                    });*/
+                    // add geofence
                 }
                 finish();
             }
