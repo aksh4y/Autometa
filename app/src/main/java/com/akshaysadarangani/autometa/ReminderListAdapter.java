@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.firebase.geofire.GeoFire;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -74,8 +73,7 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int pos = position;
-                Reminder reminder = triggerList.get(pos);
+                Reminder reminder = triggerList.get(position);
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("tasks");
                 GeoFire geoFire = new GeoFire(myRef);
@@ -92,9 +90,9 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
                         }
                     }
                 });
-                triggerList.remove(pos);
-                notifyItemRemoved(pos);
-                notifyItemRangeChanged(pos, triggerList.size());
+                triggerList.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, triggerList.size());
             }
         });
     }

@@ -28,8 +28,8 @@
         android:paddingTop="20dp"
         android:paddingLeft="20dp"
         android:paddingStart="20dp"
-        android:paddingRight="0dp"
-        android:paddingEnd="0dp">
+        android:paddingRight="20dp"
+        android:paddingEnd="20dp">
 
         <ImageView
             android:id="@+id/logo"
@@ -37,6 +37,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:gravity="center"
+            android:transitionName="logo_transition"
             app:srcCompat="@drawable/logo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>

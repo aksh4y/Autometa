@@ -44,9 +44,31 @@
         android:layout_marginEnd="20dp"
         android:textStyle="bold"
         android:textColor="#64dd17"
-        android:text="SENT"
+        android:text="DONE"
         android:layout_toRightOf="@id/done"
         android:layout_toEndOf="@+id/done"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:id="@+id/notif_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:ellipsize="none"
+        android:maxLines="100"
+        android:scrollHorizontally="false"
+        android:layout_height="wrap_content"
+        android:singleLine="false"
+        android:textSize="12sp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginEnd="20dp"
+        android:textStyle="bold"
+        android:textColor="#ffffff"
+        android:layout_toRightOf="@id/notif_title"
+        android:layout_toEndOf="@+id/notif_title"
+        android:layout_toLeftOf="@+id/close_btn"
+        android:layout_toStartOf="@id/close_btn"
         android:layout_centerVertical="true" />
 
     <ImageButton

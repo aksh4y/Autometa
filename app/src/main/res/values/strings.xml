@@ -9,15 +9,18 @@
     <string name="slide_1_desc">Location based reminders to help you remember buying milk and bread when you\'re near a grocery store!</string>
 
     <string name="slide_2_title">Text Automation</string>
-    <string name="slide_2_desc">Text your friends auto-magically when you\'re 10 minutes away to notify them of your arrival at the cafe!</string>
+    <string name="slide_2_desc">Text your friends auto-magically when you\'re 100 meters away or 50 kilometers away to notify them of your arrival at the cafe!</string>
 
-    <string name="slide_3_title">Email Automation</string>
-    <string name="slide_3_desc">Email your team about a delay in meeting if you\'re more than 10 minutes away from your meeting location!</string>
+    <string name="slide_3_title">Snooze / Cancel</string>
+    <string name="slide_3_desc">Get notified with a 60 second timer before automation is triggered with the option to snooze/cancel it!</string>
 
-    <string name="slide_4_title">Snooze / Cancel</string>
-    <string name="slide_4_desc">Set up a countdown in the settings menu to see a timer before automation is triggered and snooze or cancel it!</string>
+    <string name="slide_4_title">Grant Permissions</string>
+    <string name="slide_4_desc">Autometa needs permissions from you in order to trigger geo-based reminders and automation. </string>
+    <!--<string name="slide_4_title">Email Automation</string>
+    <string name="slide_4_desc">Email your team about a delay in meeting if you\'re more than 10 minutes away from your meeting location!</string>-->
 
     <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
+
     <string name="play_again">Play Again</string>
 
     <string name="title_activity_splash">SplashActivity</string>

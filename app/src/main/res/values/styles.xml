@@ -9,8 +9,6 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowActivityTransitions">true</item>
-        <item name="android:windowEnterTransition">@transition/explode</item>
-        <item name="android:windowExitTransition">@transition/explode</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

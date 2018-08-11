@@ -1,6 +1,11 @@
 package com.akshaysadarangani.autometa;
 
+import android.Manifest;
+import android.content.DialogInterface;
+import android.net.Uri;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Context;
@@ -19,12 +24,22 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.DialogOnAnyDeniedMultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.karumi.dexter.listener.single.PermissionListener;
+
+import java.util.List;
+
 public class WelcomeActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
     private LinearLayout dotsLayout;
     private int[] layouts;
-    private Button btnNext;
+    private Button btnNext, btnPerm;
     private PrefManager prefManager;
 
     @Override
@@ -59,6 +74,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 R.layout.welcome_slide3,
                 R.layout.welcome_slide4};
 
+
         // adding bottom dots
         addBottomDots(0);
 
@@ -90,6 +106,49 @@ public class WelcomeActivity extends AppCompatActivity {
                 }
             }
         });
+
+        MultiplePermissionsListener dialogMultiplePermissionsListener =
+                DialogOnAnyDeniedMultiplePermissionsListener.Builder
+                        .withContext(getApplicationContext())
+                        .withTitle("Permissions Needed")
+                        .withMessage("Internet is needed only when you set a trigger, location for geo-based triggers, contacts to pick contacts and SMS for automated texts")
+                        .withButtonText(android.R.string.ok)
+                        .withIcon(R.mipmap.ic_launcher_round)
+                        .build();
+    }
+
+    /**
+     * Showing Alert Dialog with Settings option
+     * Navigates user to app settings
+     * NOTE: Keep proper title and message depending on your app
+     */
+    private void showSettingsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeActivity.this);
+        builder.setTitle("Need Permissions");
+        builder.setMessage("Autometa needs permissions. You can grant them in app settings.");
+        builder.setPositiveButton("GOTO SETTINGS", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                openSettings();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+
+    }
+
+    // navigating user to app settings
+    private void openSettings() {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+        startActivityForResult(intent, 101);
     }
 
     private void addBottomDots(int currentPage) {
@@ -179,6 +238,29 @@ public class WelcomeActivity extends AppCompatActivity {
 
             assert layoutInflater != null;
             View view = layoutInflater.inflate(layouts[position], container, false);
+            if(position == 3) {
+                btnPerm = view.findViewById(R.id.grant);
+                btnPerm.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Dexter.withActivity(WelcomeActivity.this)
+                                .withPermissions(
+                                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                                        Manifest.permission.ACCESS_FINE_LOCATION,
+                                        Manifest.permission.INTERNET,
+                                        Manifest.permission.SEND_SMS,
+                                        Manifest.permission.READ_CONTACTS,
+                                        Manifest.permission.WAKE_LOCK
+                                ).withListener(new MultiplePermissionsListener() {
+                            @Override public void onPermissionsChecked(MultiplePermissionsReport report) {
+                                if (report.isAnyPermissionPermanentlyDenied()) {
+                                    showSettingsDialog();
+                                }}
+                            @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {token.continuePermissionRequest();}
+                        }).check();
+                    }
+                });
+            }
             container.addView(view);
 
             return view;

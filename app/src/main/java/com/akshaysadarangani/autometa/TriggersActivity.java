@@ -1,8 +1,10 @@
 package com.akshaysadarangani.autometa;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -11,13 +13,13 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.firebase.geofire.GeoFire;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,8 +32,6 @@ import java.util.List;
 
 public class TriggersActivity extends AppCompatActivity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
-    private RecyclerView recyclerView;
     private List<Reminder> triggerList;
     private ReminderListAdapter mAdapter;
     private ShimmerFrameLayout mShimmerViewContainer;
@@ -53,7 +53,7 @@ public class TriggersActivity extends AppCompatActivity {
         myRef = database.getReference("tasks");
 
         mShimmerViewContainer = findViewById(R.id.shimmer_view_container);
-        recyclerView = findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         triggerList = new ArrayList<>();
         mAdapter = new ReminderListAdapter(this, triggerList);
         mSwipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
@@ -71,16 +71,22 @@ public class TriggersActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(TriggersActivity.this, SetActivity.class);
+                ImageView img = findViewById(R.id.logo);
                 myIntent.putExtra("userName", userName);
                 myIntent.putExtra("uid", userID);
-                TriggersActivity.this.startActivity(myIntent);
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(TriggersActivity.this, new Pair<View, String>(img, "logo_transition"));
+                    TriggersActivity.this.startActivity(myIntent, options.toBundle());
+                }
+                else
+                    TriggersActivity.this.startActivity(myIntent);
             }
         });
 
         fab2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent myIntent = new Intent(TriggersActivity.this, MapActivity.class);
+                Intent myIntent = new Intent(TriggersActivity.this, PlotActivity.class);
                 myIntent.putExtra("userName", userName);
                 myIntent.putExtra("uid", userID);
                 TriggersActivity.this.startActivity(myIntent);
@@ -108,8 +114,7 @@ public class TriggersActivity extends AppCompatActivity {
                 // Block this thread for 2 seconds.
                 try {
                     Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                }
+                } catch (InterruptedException e) { }
 
                 // After sleep finished blocking, create a Runnable to run on the UI Thread.
                 runOnUiThread(new Runnable() {
@@ -159,7 +164,7 @@ public class TriggersActivity extends AppCompatActivity {
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(mAdapter.getItemCount() > 0) {
                     triggerList.clear();
                     mAdapter.notifyDataSetChanged();
@@ -175,8 +180,8 @@ public class TriggersActivity extends AppCompatActivity {
                         String units = d.child("unit").getValue(String.class);
 
                         LatLng location = new LatLng(
-                                d.child("location").child("latitude").getValue(Long.class),
-                                d.child("location").child("longitude").getValue(Long.class));
+                                d.child("location").child("latitude").getValue(Double.class),
+                                d.child("location").child("longitude").getValue(Double.class));
                         String placeName = d.child("placeName").getValue(String.class);
                         boolean completed = d.child("completed").getValue(Boolean.class);
                         Reminder r = new Reminder(rid, userID, userName, type, description, phone, email, distance, units, location, placeName, completed);

@@ -16,6 +16,7 @@
         android:layout_height="100dp"
         android:gravity="center"
         app:srcCompat="@drawable/logo"
+        android:transitionName="logo_transition"
         android:contentDescription="@string/app_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

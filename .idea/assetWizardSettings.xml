@@ -23,7 +23,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/F:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_check_circle_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/F:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_lock_open_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -33,9 +33,9 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="ic_done" />
+                                      <entry key="outputName" value="ic_perms" />
                                       <entry key="theme" value="CUSTOM" />
-                                      <entry key="themeColor" value="6ce000" />
+                                      <entry key="themeColor" value="ffffff" />
                                     </map>
                                   </option>
                                 </PersistentState>
