@@ -63,7 +63,7 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
     ConstraintLayout mLayout;
     AnimationDrawable animationDrawable;
     WaveLoadingView wlv;
-    Spinner task, distance, units;
+    Spinner task, distance;// units;
     FirebaseDatabase database;
     DatabaseReference myRef;
     Snackbar snackbar;
@@ -143,7 +143,7 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
 
         task = findViewById(R.id.spinner);
         distance = findViewById(R.id.spinner3);
-        units = findViewById(R.id.spinner4);
+        //units = findViewById(R.id.spinner4);
         //perimeter = findViewById(R.id.spinner5);
         final EditText reminderDesc = findViewById(R.id.reminderDesc);
         Button goButton = findViewById(R.id.go);
@@ -158,10 +158,10 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
         final ArrayAdapter<String> digitArray = new ArrayAdapter<>(this, R.layout.spinner_item, getResources().getStringArray(R.array.digits));
         distance.setAdapter(digitArray);
 
-        units.setPopupBackgroundResource(R.color.bg_screen1);
+        /*units.setPopupBackgroundResource(R.color.bg_screen1);
         final ArrayAdapter<String> unitArray = new ArrayAdapter<>(this, R.layout.spinner_item, getResources().getStringArray(R.array.units));
         units.setAdapter(unitArray);
-        units.setEnabled(false);
+        units.setEnabled(false);*/
 
         /*perimeter.setPopupBackgroundResource(R.color.bg_screen1);
         final ArrayAdapter<String> perimeterArray = new ArrayAdapter<>(this, R.layout.spinner_item, getResources().getStringArray(R.array.perimeter));
@@ -247,7 +247,7 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
                     default: return;
                 }
 
-                if(distance.getSelectedItemPosition() == 0 || units.getSelectedItemPosition() == 0 || location == null)
+                if(distance.getSelectedItemPosition() == 0 || location == null)
                     return;
 
                 // Write to the database
@@ -257,7 +257,16 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
                     snackbar.show();
                 }
                 else {
-                    Reminder reminder = new Reminder(rID, userID, userName, type, reminderDesc.getText().toString(), tvContactNumber.getText().toString(), tvContactNumber.getText().toString(), Integer.parseInt(distance.getSelectedItem().toString()), units.getSelectedItem().toString(), location, placeName, false);
+                    String dis[] = distance.getSelectedItem().toString().split(" ");
+                    int d = Integer.parseInt(dis[0]);
+                    String unit = dis[1];
+                    if(unit.equals("meters"))
+                        unit = "m";
+                    else
+                        unit = "km";
+
+
+                    Reminder reminder = new Reminder(rID, userID, userName, type, reminderDesc.getText().toString(), tvContactNumber.getText().toString(), tvContactNumber.getText().toString(), d, unit, location, placeName, false);
                     myRef.child(rID).setValue(reminder);
                     /*geoFire = new GeoFire(myRef.child(rID));
                     geoFire.setLocation(rID, new GeoLocation(location.latitude, location.longitude), new GeoFire.CompletionListener() {
@@ -288,7 +297,9 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position != 0)
-                    units.setEnabled(true);
+                   // units.setEnabled(true);
+                    progress += 10;
+                wlv.setProgressValue(progress);
             }
 
             @Override
@@ -297,54 +308,29 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
             }
         });
 
-        units.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+       /* units.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                switch (distance.getSelectedItemPosition()) {
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 5:
-                    case 6:
-                    case 7:
-                        if(position == 1) {
-                            units.setSelection(0);
-                            snackbar = Snackbar.make(parentLayout, "Radius too small.", Snackbar.LENGTH_LONG);
-                            snackbar.show();
-                        }
-                        break;
-                    case 8:
-                    case 9:
-                    case 10:
-                        if(position == 2) {
-                            units.setSelection(0);
-                            snackbar = Snackbar.make(parentLayout, "Radius too big", Snackbar.LENGTH_LONG);
-                            snackbar.show();
-                        }
-                }
-
                 if(position != 0)
-                    progress += 10;
-                wlv.setProgressValue(progress);
+
             }
             @Override
             public void onNothingSelected(AdapterView<?> parentView) { }
 
-        });
+        });*/
 
         btn_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(distance.getSelectedItemPosition() == 0 || units.getSelectedItemPosition() == 0) {
-                    snackbar = Snackbar.make(parentLayout, "Select distance and unit first", Snackbar.LENGTH_LONG);
+                if(distance.getSelectedItemPosition() == 0) {
+                    snackbar = Snackbar.make(parentLayout, "Select distance first", Snackbar.LENGTH_LONG);
                     snackbar.show();
                     return;
                 }
-                if(units.getSelectedItemPosition() == 1)
-                    radius = Integer.parseInt(distance.getSelectedItem().toString());
+                if(distance.getSelectedItemPosition() > 0 && distance.getSelectedItemPosition() < 8)
+                    radius = Integer.parseInt(distance.getSelectedItem().toString().split(" ")[0]) * 1000;
                 else
-                    radius = Integer.parseInt(distance.getSelectedItem().toString()) * 1000;
+                    radius = Integer.parseInt(distance.getSelectedItem().toString().split(" ")[0]);
                 DialogActivity dialogActivity = new DialogActivity();
                 dialogActivity.show(getSupportFragmentManager(), "Pick your location");
             }

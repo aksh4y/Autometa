@@ -30,7 +30,7 @@ public class CustomInfowindow implements GoogleMap.InfoWindowAdapter {
         if(marker.getTitle().equals("SEARCH HERE"))
             tip.setText("");
         else
-            tip.setText(R.string.press_and_hold_this_window_to_set_up_a_geofence);
+            tip.setText(R.string.infowindow_tip);
         return view;
     }
 }

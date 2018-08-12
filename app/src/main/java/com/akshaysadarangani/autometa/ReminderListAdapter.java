@@ -2,18 +2,25 @@ package com.akshaysadarangani.autometa;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import java.util.ArrayList;
 import java.util.List;
 
 
-public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapter.MyViewHolder> {
+public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapter.MyViewHolder> implements OnCompleteListener<Void> {
     private Context context;
     private View v;
     private List<Reminder> triggerList;
@@ -79,10 +86,42 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
                 triggerList.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, triggerList.size());
+                String key;
+                switch(reminder.getType()) {
+                    case "REMINDER":
+                        key = rid+"&&"+reminder.getDescription()+"&&"+reminder.getPlaceName()+"&&null";
+                        break;
+                    case "SMS":
+                        key = rid+"&&"+reminder.getDescription()+"&&"+reminder.getPlaceName()+"&&"+reminder.getPhone();
+                        break;
+                    case "EMAIL":
+                        key = rid+"&&"+reminder.getDescription()+"&&"+reminder.getPlaceName()+"&&"+reminder.getEmail();
+                        break;
+                    default: key = "";
+                }
+                removeGeofence(key);
             }
         });
     }
-    // recipe
+
+    private void removeGeofence(String requestID) {
+        ArrayList<String> triggeringGeofencesIdsList = new ArrayList<>();
+        triggeringGeofencesIdsList.add(requestID);
+        GeofencingClient mGeofencingClient = LocationServices.getGeofencingClient(context);
+        mGeofencingClient.removeGeofences(triggeringGeofencesIdsList).addOnCompleteListener(this);
+    }
+
+    @Override
+    public void onComplete(@NonNull Task<Void> task) {
+        if (task.isSuccessful()) {
+            Log.e("SERVICE", "DELETED GEOFENCE");
+        } else {
+            // Get the status code for the error and log it using a user-friendly message.
+            String errorMessage = GeofenceErrorMessages.getErrorString(context, task.getException());
+            Log.w("ReminderList", errorMessage);
+        }
+    }
+
     @Override
     public int getItemCount() {
         return triggerList.size();

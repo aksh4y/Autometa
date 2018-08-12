@@ -9,16 +9,16 @@
 
     <string-array name="digits">
         <item></item>
-        <item>1</item>
-        <item>2</item>
-        <item>5</item>
-        <item>10</item>
-        <item>15</item>
-        <item>30</item>
-        <item>50</item>
-        <item>100</item>
-        <item>200</item>
-        <item>500</item>
+        <item>1 kilometers</item>
+        <item>2 kilometers</item>
+        <item>5 kilometers</item>
+        <item>10 kilometers</item>
+        <item>15 kilometers</item>
+        <item>30 kilometers</item>
+        <item>50 kilometers</item>
+        <item>100 meters</item>
+        <item>200 meters</item>
+        <item>500 meters</item>
     </string-array>
 
     <string-array name="units">

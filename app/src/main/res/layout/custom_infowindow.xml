@@ -13,7 +13,7 @@
         android:textColor="@color/bg_screen1"
         android:textAlignment="center"
         android:textSize="12sp"
-        android:text="@string/press_and_hold_this_window_to_set_up_a_geofence" />
+        android:text="@string/infowindow_tip" />
 
     <TextView
         android:id="@+id/content"
