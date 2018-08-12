@@ -14,6 +14,7 @@ import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -52,6 +54,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -70,7 +74,8 @@ import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private GoogleMap mMap;
-    Button search, confirm;
+    Button confirm;
+    FloatingActionButton help;
     HashMap<Integer, String> values;
     Spinner categories;
     SudoPlace plc;
@@ -116,7 +121,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Intent intent = getIntent();
         userID = intent.getStringExtra("uid");
         radius = intent.getIntExtra("radius", 0);
-        Log.e("Radius", Integer.toString(radius));
 
         values = new HashMap<>();
         values.put(0, "bank");
@@ -137,13 +141,50 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         values.put(15, "supermarket");
 
 
-        search = findViewById(R.id.search);
+        // search = findViewById(R.id.search);
         confirm = findViewById(R.id.confirm);
+        help = findViewById(R.id.fab);
         categories = findViewById(R.id.categories);
         categories.setPopupBackgroundResource(R.color.bg_screen1);
         final ArrayAdapter<String> cats = new ArrayAdapter<>(this, R.layout.spinner_item, getResources().getStringArray(R.array.categories));
         categories.setAdapter(cats);
-        categories.setSelection(1);
+        //categories.setSelection(1);
+
+        categories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position != 0) {
+                    StringBuilder sbValue;
+                    if (mo == null)
+                        sbValue = new StringBuilder(sbMethod(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+                    else
+                        sbValue = new StringBuilder(sbMethod(mo.getPosition().latitude, mo.getPosition().longitude));
+                    PlacesTask placesTask = new PlacesTask();
+                    placesTask.execute(sbValue.toString());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new FancyGifDialog.Builder(MapsActivity.this)
+                        .setTitle("Autometa How To")
+                        .setMessage("1. Tap anywhere on the map to set your search location.\n2. Select a category to search\n3. Click on a marker to get location information.\n4. Long press the location information window to set your radius\n5. Tap the confirm button on the top left and you're done.")
+                        .setNegativeBtnText("Got It!")
+                        .setPositiveBtnBackground("#FF4081")
+                        .setPositiveBtnText("Yup, Got It!")
+                        .setNegativeBtnBackground("#FFA9A7A8")
+                        .setGifResource(R.drawable.world)
+                        .isCancellable(true)
+                        .build();
+            }
+        });
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         //mo = new MarkerOptions().position(new LatLng(0, 0)).title("My Current Location");
@@ -157,19 +198,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         geoFire = new GeoFire(ref);
 
         setUpLocation();
-
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                StringBuilder sbValue;
-                if(mo == null)
-                    sbValue = new StringBuilder(sbMethod(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
-                else
-                    sbValue = new StringBuilder(sbMethod(mo.getPosition().latitude, mo.getPosition().longitude));
-                PlacesTask placesTask = new PlacesTask();
-                placesTask.execute(sbValue.toString());
-            }
-        });
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -249,19 +277,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             final double latitude = mLastLocation.getLatitude();
             final double longitude = mLastLocation.getLongitude();
 
-            geoFire.setLocation("You", new GeoLocation(latitude, longitude),
+            /*geoFire.setLocation("You", new GeoLocation(latitude, longitude),
                     new GeoFire.CompletionListener() {
                         @Override
                         public void onComplete(String key, DatabaseError error) {
                             if(mCurrentLocation != null)
                                 mCurrentLocation.remove();
-                            /*mCurrentLocation = mMap.addMarker(new MarkerOptions()
+                            *//*mCurrentLocation = mMap.addMarker(new MarkerOptions()
                                     .position(new LatLng(latitude, longitude))
-                                    .title("You"));*/
+                                    .title("You"));*//*
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 12.0f));
 
                         }
-                    });
+                    });*/
 
 
             Log.e("MapsActivity", String.format("Your location was changed: %f / %f ", latitude, longitude));
@@ -308,14 +336,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         if(isPermissionGranted())
             mMap.setMyLocationEnabled(true);
+
+        new FancyGifDialog.Builder(MapsActivity.this)
+                .setTitle("Autometa")
+                .setMessage("Tap anywhere on the map to set as search area.")
+                .setPositiveBtnBackground("#FF4081")
+                .setNegativeBtnText("Great!")
+                .setPositiveBtnText("Awesome!")
+                .isCancellable(false)
+                .setGifResource(R.drawable.touch)   //Pass your Gif here
+                .build();
+
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
                 mMap.clear();
-                mo = new MarkerOptions().position(latLng).title("Search Here");
+                mo = new MarkerOptions().position(latLng).title("SEARCH HERE");
                 marker = mMap.addMarker(mo);
+                marker.showInfoWindow();
+                categories.performClick();
             }
         });
+
+
+        CustomInfowindow customInfoWindow = new CustomInfowindow(this);
+        mMap.setInfoWindowAdapter(customInfoWindow);
 
         //red outline
         final int strokeColor = 0xaaff0000;
@@ -334,35 +379,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .strokeColor(shadeColor)
                         .fillColor(shadeColor));
 
-                String title = marker.getTitle().substring(0, marker.getTitle().indexOf(":") - 1);
-                // Get place from place json array using place title
-                double lat,lng;
-               for(HashMap<String, String> map : places) {
-                   if(map.containsValue(title)) {
-                       // Log.e("TEST ", map.get("place_name"));
-                       lat = Double.parseDouble(map.get("lat"));
-                       lng = Double.parseDouble(map.get("lng"));
-                       LatLng latLng = new LatLng(lat, lng);
-                       plc = new SudoPlace(latLng, map.get("place_name"));
-                       break;
-                   }
-               }
+                try {
+                    String title = marker.getTitle().substring(0, marker.getTitle().indexOf(":") - 1);
+                    // Get place from place json array using place title
+                    double lat, lng;
+                    for (HashMap<String, String> map : places) {
+                        if (map.containsValue(title)) {
+                            // Log.e("TEST ", map.get("place_name"));
+                            lat = Double.parseDouble(map.get("lat"));
+                            lng = Double.parseDouble(map.get("lng"));
+                            LatLng latLng = new LatLng(lat, lng);
+                            plc = new SudoPlace(latLng, map.get("place_name"));
+                            break;
+                        }
+                    }
+                } catch (Exception e) {/* The info window does not belong to a place (e.g. Search here)*/ }
             }
         });
-
-//        marker =  mMap.addMarker(mo);
-
-       /* mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick(LatLng latLng) {
-
-            }
-        });*/
-
-       /* // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
     }
 
 
@@ -443,11 +476,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
-        //displayLocation();
-
-        /*LatLng myCoordinates = new LatLng(location.getLatitude(), location.getLongitude());
-        marker.setPosition(myCoordinates);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(myCoordinates));*/
     }
 
     @Override
@@ -470,7 +498,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         sb.append("location=" + mLatitude + "," + mLongitude);
-        sb.append("&radius=" + 1000);
+        sb.append("&radius=" + radius);
         sb.append("&type=" + values.get(categories.getSelectedItemPosition()));
         sb.append("&sensor=true");
         sb.append("&key=AIzaSyBPxTDj2IDJAg_QBXthG59-L6c9AddxP_k");
@@ -577,6 +605,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         protected void onPostExecute(List<HashMap<String, String>> list) {
 
             Log.d("Map", "list size: " + list.size());
+
+            if(list.size() == 0)
+                new FancyGifDialog.Builder(MapsActivity.this)
+                        .setTitle("Autometa")
+                        .setMessage("Oops no results in this area! Try increasing your radius or selecting another area.")
+                        .setPositiveBtnBackground("#FF4081")
+                        .setNegativeBtnText("Change radius")
+                        .setPositiveBtnText("Change area")
+                        .setGifResource(R.drawable.oops)
+                        .OnNegativeClicked(new FancyGifDialogListener() {
+                            @Override
+                            public void OnClick() {
+                                finish();
+                            }
+                        })
+                        .build();
             // Clears all the existing markers;
             mMap.clear();
 
@@ -614,7 +658,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 // Placing a marker on the touched position
                 Marker m = mMap.addMarker(markerOptions);
-
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
             }
             progressBar.setVisibility(View.GONE);
         }

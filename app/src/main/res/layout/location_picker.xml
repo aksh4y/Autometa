@@ -4,14 +4,15 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:padding="50dp"
-    android:background="@drawable/first_layer"
+    android:background="@drawable/repeating_pattern"
     android:orientation="vertical">
 
 
     <Button
         android:id="@+id/location_cat"
         android:layout_width="match_parent"
-        android:background="@drawable/rounded_btn"
+        android:backgroundTint="@color/bg_screen1"
+        android:background="@drawable/rounded_button"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:textColor="#FFF"
@@ -19,10 +20,19 @@
 
     <Button
         android:id="@+id/location_pick"
-        android:background="@drawable/rounded_btn"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="@color/bg_screen1"
         android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#FFF"
         android:text="@string/location_picker_lbl" />
+
+    <TextView
+        android:id="@+id/place_lbl"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#FFF" />
 </LinearLayout>

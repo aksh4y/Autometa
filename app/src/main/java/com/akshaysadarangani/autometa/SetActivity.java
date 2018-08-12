@@ -20,7 +20,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.transition.Explode;
+import android.transition.Slide;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -95,7 +98,17 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        }
         setContentView(R.layout.activity_set);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Slide slide = new Slide(Gravity.END);
+            getWindow().setEnterTransition(slide);
+            slide = new Slide(Gravity.START);
+            getWindow().setExitTransition(slide);
+            getWindow().setAllowEnterTransitionOverlap(false);
+        }
 
         Intent intent = getIntent();
         userName = intent.getStringExtra("userName");

@@ -25,7 +25,8 @@
             android:id="@+id/confirm"
             android:padding="10dp"
             android:layout_marginTop="20dp"
-            android:paddingLeft="10dp"/>
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"/>
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -41,21 +42,25 @@
             android:indeterminateTint="@color/bg_screen1"
             />
 
-        <Button
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_gravity="end|bottom"
             android:gravity="end|bottom"
-            android:background="@color/bg_screen1"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:textColor="#FFF"
             android:layout_alignParentBottom="true"
-            android:text="@string/search_lbl"
-            android:id="@+id/search"
+            android:clickable="true"
+            android:focusable="true"
+            app:backgroundTint="@color/bg_screen1"
             android:padding="10dp"
-            android:layout_marginTop="20dp"
-            android:paddingRight="10dp"/>
+            android:layout_marginBottom="20dp"
+            android:paddingRight="10dp"
+            android:paddingEnd="10dp"
+            android:src="@drawable/ic_help" />
 
         <Spinner
             android:id="@+id/categories"
@@ -66,9 +71,10 @@
             android:layout_alignParentStart="true"
             android:background="@color/bg_screen1"
             android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp"
             android:padding="10dp"
-            android:paddingLeft="10dp"
-            android:paddingStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             />
 
         <!--<com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper

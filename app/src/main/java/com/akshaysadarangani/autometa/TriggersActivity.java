@@ -1,19 +1,25 @@
 package com.akshaysadarangani.autometa;
 
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.LocationManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Explode;
+import android.transition.Slide;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -43,7 +49,17 @@ public class TriggersActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        }
         setContentView(R.layout.activity_triggers);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Slide slide = new Slide(Gravity.END);
+            getWindow().setEnterTransition(slide);
+            slide = new Slide(Gravity.START);
+            getWindow().setExitTransition(slide);
+            getWindow().setAllowEnterTransitionOverlap(false);
+        }
 
         Intent intent = getIntent();
         userName = intent.getStringExtra("userName");
@@ -70,6 +86,11 @@ public class TriggersActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!isLocationEnabled()) {
+                    View parentLayout = findViewById(android.R.id.content);
+                    Snackbar.make(parentLayout, "Please enable location first.", Snackbar.LENGTH_LONG).show();
+                    return;
+                }
                 Intent myIntent = new Intent(TriggersActivity.this, SetActivity.class);
                 ImageView img = findViewById(R.id.logo);
                 myIntent.putExtra("userName", userName);
@@ -138,7 +159,20 @@ public class TriggersActivity extends AppCompatActivity {
         fetchTriggers();
     }
 
+    private boolean isLocationEnabled() {
+        LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        boolean gps_enabled = false;
+        boolean network_enabled = false;
 
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (Exception ex) { gps_enabled = false; }
+
+        try {
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch (Exception ex) { network_enabled = false; }
+        return gps_enabled || network_enabled;
+    }
 
     private void fetchTriggers() {
         triggerList.clear();
