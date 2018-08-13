@@ -20,3 +20,5 @@ What is innovative about Autometa is that while some apps do exist which provide
 Autometa has the potential to be used by users for a long time as short-term memory loss is a natural occurrence and occurs in almost all humans. Autometa aims to solve some of the problems related to exactly that. Short term memory loss in humans will never go away and so the app will always remain useful until an advanced innovation takes place.
 
 The top potential weakness of Autometa is perhaps the location and battery of the phone. Location service is the key to this app’s successful execution and if that doesn’t work, then the app’s functionality is lost. To resolve this, Autometa makes use of not just GPS but also Wi-Fi, Bluetooth and cellular scanning for location. A switched off phone will lead to users missing reminders and so the reminders get snoozed automatically. 
+
+<a href='https://play.google.com/store/apps/details?id=com.akshaysadarangani.autometa&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/></a>
