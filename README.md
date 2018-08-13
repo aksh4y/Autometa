@@ -1,5 +1,4 @@
-![img](app/src/main/res/drawable/icon.png)
-# AUTOMETA
+# AUTOMETA <img src='https://raw.githubusercontent.com/aksh4y/Autometa/master/app/src/main/res/mipmap-hdpi/ic_launcher.png' width=35 height=35/>
 ### Automate location-based tasks
 
 ![img](Screenshots/feature.jpg)
@@ -21,4 +20,4 @@ Autometa has the potential to be used by users for a long time as short-term mem
 
 The top potential weakness of Autometa is perhaps the location and battery of the phone. Location service is the key to this app’s successful execution and if that doesn’t work, then the app’s functionality is lost. To resolve this, Autometa makes use of not just GPS but also Wi-Fi, Bluetooth and cellular scanning for location. A switched off phone will lead to users missing reminders and so the reminders get snoozed automatically. 
 
-<a href='https://play.google.com/store/apps/details?id=com.akshaysadarangani.autometa&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/></a>
+<a href='https://youtu.be/3uIyIn6Z84A'><img alt='Watch on YouTube' src='https://upload.wikimedia.org/wikipedia/commons/3/34/YouTube_logo_%282017%29.png' width=200/></a> <a href='https://play.google.com/store/apps/details?id=com.akshaysadarangani.autometa&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width=200/></a>
