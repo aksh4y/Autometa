@@ -73,7 +73,7 @@
     <string name="geofence_transition_invalid_type">
         Geofence transition error: invalid transition type %1$d
     </string>
-    <string name="cancel_btn_lbl">Cancel</string>
+    <string name="cancel_btn_lbl">Defer</string>
     <string name="infowindow_tip">PRESS AND HOLD HERE TO SET UP A GEOFENCE</string>
 
 </resources>
