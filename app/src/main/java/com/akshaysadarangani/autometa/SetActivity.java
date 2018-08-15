@@ -47,6 +47,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
+import java.util.Set;
+
 import me.itangqi.waveloadingview.WaveLoadingView;
 import static com.google.android.gms.location.Geofence.NEVER_EXPIRE;
 
@@ -57,6 +59,7 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
     final int PLACE_PICKER_REQUEST = 1;
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
     int progress = 1;
     TextView tvContactNumber;
     LatLng location;
@@ -187,7 +190,13 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
                     tvContactNumber.setVisibility(View.GONE);
 
                 }
-                else {
+                else if(position == 2) {
+                    if(!checkSMSPermissions()) {
+                        snackbar = Snackbar.make(parentLayout, "Please Grant SMS Permission.", Snackbar.LENGTH_LONG);
+                        snackbar.show();
+                        task.setSelection(1);
+                        return;
+                    }
                     reminderDesc.setVisibility(View.GONE);
                     contact.setVisibility(View.VISIBLE);
                     tvContactNumber.setVisibility(View.VISIBLE);
@@ -286,8 +295,10 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
                     else
                         desc = contactName;
                     String key = rID + "&&" + type + "&&" + desc + "&&" + placeName + "&&" + deets[0];
+                    String geoKey = location.latitude + "&&" + location.longitude + "&&" + radius;
                     populateGeofenceList(key, location, radius);
                     addGeofencesButtonHandler(v);
+                    storeGeofences(key, geoKey);
                 }
                 finish();
             }
@@ -307,17 +318,6 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
 
             }
         });
-
-       /* units.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if(position != 0)
-
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) { }
-
-        });*/
 
         btn_location.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -414,6 +414,24 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(Color.TRANSPARENT);
 
+    }
+
+    private boolean checkSMSPermissions() {
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.SEND_SMS) !=
+                PackageManager.PERMISSION_GRANTED) {
+            // Permission not yet granted. Use requestPermissions().
+            // MY_PERMISSIONS_REQUEST_SEND_SMS is an
+            // app-defined int constant. The callback method gets the
+            // result of the request.
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.SEND_SMS},
+                    MY_PERMISSIONS_REQUEST_SEND_SMS);
+            return false;
+        } else {
+            // Permission already granted. Enable the SMS button.
+            return true;
+        }
     }
 
     @Override
@@ -585,6 +603,15 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
                 .build());
     }
 
+    private void storeGeofences(String key, String geoKey) {
+        SharedPreferences pref = getSharedPreferences("GEOFENCES_DB", MODE_PRIVATE);
+        SharedPreferences.Editor editor = getSharedPreferences("GEOFENCES_DB", MODE_PRIVATE).edit();
+        if(!pref.contains(key)) {
+            editor.putString(key, geoKey);
+            editor.apply();
+        }
+    }
+
     /**
      * Shows a {@link Snackbar} using {@code text}.
      *
@@ -690,6 +717,10 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         Log.i(TAG, "onRequestPermissionResult");
+        if(requestCode == MY_PERMISSIONS_REQUEST_SEND_SMS && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            task.setSelection(2);
+        }
+
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
             if (grantResults.length <= 0) {
                 // If user interaction was interrupted, the permission request is cancelled and you

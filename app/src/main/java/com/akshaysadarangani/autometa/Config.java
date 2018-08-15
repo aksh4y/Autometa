@@ -18,4 +18,6 @@ public class Config {
     public static final int NOTIFICATION_ID_BIG_IMAGE = 101;
 
     public static final String SHARED_PREF = "autometa_firebase";
+    public static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    public static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 8888;
 }

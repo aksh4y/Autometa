@@ -1,6 +1,7 @@
 package com.akshaysadarangani.autometa;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapter.MyViewHolder> implements OnCompleteListener<Void> {
@@ -63,7 +66,7 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
         if(reminder.getPhone() != null)
             holder.phone_email.setText(reminder.getPhone());
         if(reminder.getEmail() != null)
-         holder.phone_email.setText(reminder.getEmail());
+            holder.phone_email.setText(reminder.getEmail());
 
         holder.distance.setText(reminder.getDistance() + " " + reminder.getUnit());
         holder.location.setText("Location: " + reminder.getPlaceName());
@@ -109,6 +112,9 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
         triggeringGeofencesIdsList.add(requestID);
         GeofencingClient mGeofencingClient = LocationServices.getGeofencingClient(context);
         mGeofencingClient.removeGeofences(triggeringGeofencesIdsList).addOnCompleteListener(this);
+        SharedPreferences.Editor editor = context.getSharedPreferences("GEOFENCES_DB", MODE_PRIVATE).edit();
+        editor.remove(requestID);
+        editor.apply();
     }
 
     @Override
