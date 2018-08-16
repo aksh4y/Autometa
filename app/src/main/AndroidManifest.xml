@@ -92,12 +92,15 @@
         <!-- SERVICES -->
         <service
             android:name=".services.GeofenceTransitionsJobIntentService"
+            android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-        <service android:name=".services.MyNotificationService" />
+        <service android:name=".services.MyNotificationService"
+            android:enabled="true"/>
 
         <!-- RECEIVERS -->
-        <receiver android:name=".receivers.Button_listener">
+        <receiver android:name=".receivers.Button_listener"
+            android:enabled="true">
             <intent-filter>
                 <action android:name="button_click"/>
             </intent-filter>

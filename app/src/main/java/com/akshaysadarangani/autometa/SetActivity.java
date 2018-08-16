@@ -47,7 +47,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
-import java.util.Set;
 
 import me.itangqi.waveloadingview.WaveLoadingView;
 import static com.google.android.gms.location.Geofence.NEVER_EXPIRE;
@@ -551,6 +550,9 @@ public class SetActivity extends AppCompatActivity implements DialogActivity.Dia
         } else {
             // Get the status code for the error and log it using a user-friendly message.
             String errorMessage = GeofenceErrorMessages.getErrorString(this, task.getException());
+            snackbar = Snackbar.make(parentLayout, "Error: " + errorMessage, Snackbar.LENGTH_LONG);
+            snackbar.setActionTextColor(Color.RED);
+            snackbar.show();
             Log.w(TAG, errorMessage);
         }
     }
