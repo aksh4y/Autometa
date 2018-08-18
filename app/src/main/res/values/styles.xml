@@ -28,4 +28,12 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <style name="Button" parent="Base.TextAppearance.AppCompat.Button" >
+        <item name="backgroundTint">@color/bg_screen1</item>
+    </style>
+
+    <style name="GrantButton" parent="Base.TextAppearance.AppCompat.Button" >
+        <item name="backgroundTint">#263238</item>
+    </style>
+
 </resources>

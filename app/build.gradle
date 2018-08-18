@@ -6,8 +6,8 @@ android {
         applicationId "com.akshaysadarangani.autometa"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 5
-        versionName "1.4"
+        versionCode 7
+        versionName "1.6"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

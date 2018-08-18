@@ -40,10 +40,11 @@
             android:layout_marginTop="20dp"
             android:textColor="#FFF"
             android:backgroundTint="#263238"
+            style="@style/GrantButton"
             android:background="@drawable/rounded_button"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="Grant Permissions" />
+            android:text="@string/grant_permissions" />
 
     </LinearLayout>
 

@@ -20,208 +20,223 @@
         app:wlv_waveColor="#ffd600"
         android:id="@+id/wlv" />
 
-    <android.support.constraint.ConstraintLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_height="match_parent"
+    <ScrollView
         android:layout_width="match_parent"
-        android:paddingTop="20dp"
-        android:paddingLeft="20dp"
-        android:paddingStart="20dp"
-        android:paddingRight="20dp"
-        android:paddingEnd="20dp">
+        android:layout_height="match_parent">
+        <android.support.constraint.ConstraintLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:paddingTop="20dp"
+            android:paddingLeft="20dp"
+            android:paddingStart="20dp"
+            android:paddingRight="20dp"
+            android:paddingEnd="20dp">
 
-        <ImageView
-            android:id="@+id/logo"
-            android:contentDescription="@string/app_name"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:gravity="center"
-            android:transitionName="logo_transition"
-            app:srcCompat="@drawable/logo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </ScrollView>
 
-        <TextView
-            android:id="@+id/textView12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:textSize="40sp"
-            app:layout_constraintTop_toBottomOf="@id/logo"
-            android:textStyle="bold"
-            android:textColor="#fff"
-            android:text="@string/create_label1" />
-
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="150dp"
-            android:layout_height="55dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="40dp"
-            android:background="@color/bg_screen1"
-            android:fadingEdge="none"
-            app:layout_constraintLeft_toRightOf="@+id/textView12"
-            app:layout_constraintTop_toBottomOf="@+id/logo" />
+            <ImageView
+                android:id="@+id/logo"
+                android:contentDescription="@string/app_name"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:gravity="center"
+                android:transitionName="logo_transition"
+                app:srcCompat="@drawable/logo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
 
-        <TextView
-            android:id="@+id/textView13"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:textSize="40sp"
-            app:layout_constraintTop_toBottomOf="@id/textView12"
-            android:textColor="#fff"
-            android:textStyle="bold"
-            android:text="@string/create_label2" />
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:textSize="40sp"
+                app:layout_constraintTop_toBottomOf="@id/logo"
+                android:textStyle="bold"
+                android:textColor="#fff"
+                android:text="@string/create_label1" />
 
-        <Button
-            android:id="@+id/contact"
-            android:layout_width="150dp"
-            android:layout_height="55dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="40dp"
-            android:background="@color/bg_screen1"
-            android:textColor="#FFF"
-            android:textSize="15sp"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toRightOf="@+id/textView13"
-            app:layout_constraintTop_toBottomOf="@+id/textView12"
-            android:text="Contact" />
-
-        <!--<Spinner
-            android:id="@+id/spinner2"
-            android:layout_width="150dp"
-            android:layout_height="55dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="40dp"
-            android:background="@color/bg_screen1"
-            android:textAlignment="center"
-            app:layout_constraintLeft_toRightOf="@+id/textView13"
-            app:layout_constraintTop_toBottomOf="@+id/textView12" />-->
-
-        <TextView
-            android:id="@+id/numberView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#FFF"
-            android:textSize="15sp"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="40dp"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toRightOf="@+id/contact"
-            app:layout_constraintTop_toBottomOf="@+id/textView12" />
-
-        <EditText
-            android:id="@+id/reminderDesc"
-            android:layout_width="300dp"
-            android:layout_height="61dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="40dp"
-            android:hint="@string/reminder_desc"
-            android:textColorHint="#b0adad"
-            android:inputType="text"
-            android:visibility="gone"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="#FFF"
-            app:layout_constraintLeft_toRightOf="@+id/textView13"
-            app:layout_constraintTop_toBottomOf="@+id/textView12" />
-
-        <TextView
-            android:id="@+id/textView14"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:textSize="40sp"
-            app:layout_constraintTop_toBottomOf="@id/textView13"
-            android:textStyle="bold"
-            android:textColor="#fff"
-            android:text="@string/create_label3" />
-
-        <Spinner
-            android:id="@+id/spinner3"
-            android:layout_width="120dp"
-            android:layout_height="55dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="40dp"
-            android:background="@color/bg_screen1"
-            android:textAlignment="center"
-            app:layout_constraintLeft_toRightOf="@+id/textView14"
-            app:layout_constraintTop_toBottomOf="@+id/textView13" />
-
-        <!--<Spinner
-            android:id="@+id/spinner4"
-            android:layout_width="50dp"
-            android:layout_height="55dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="40dp"
-            android:background="@color/bg_screen1"
-            android:textAlignment="center"
-            app:layout_constraintLeft_toRightOf="@+id/spinner3"
-            app:layout_constraintTop_toBottomOf="@+id/textView13" />-->
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="150dp"
+                android:layout_height="55dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="40dp"
+                android:background="@color/bg_screen1"
+                android:fadingEdge="none"
+                app:layout_constraintLeft_toRightOf="@+id/textView12"
+                app:layout_constraintTop_toBottomOf="@+id/logo" />
 
 
-        <TextView
-            android:id="@+id/textView15"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:textSize="40sp"
-            app:layout_constraintTop_toBottomOf="@id/textView14"
-            android:textStyle="bold"
-            android:textColor="#fff"
-            android:text="@string/create_label4" />
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:textSize="40sp"
+                app:layout_constraintTop_toBottomOf="@id/textView12"
+                android:textColor="#fff"
+                android:textStyle="bold"
+                android:text="@string/create_label2" />
 
-        <!--<Spinner
-            android:id="@+id/spinner5"
-            android:layout_width="150dp"
-            android:layout_height="55dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="40dp"
-            android:background="@color/bg_screen1"
-            android:textAlignment="center"
-            app:layout_constraintLeft_toRightOf="@+id/textView15"
-            app:layout_constraintTop_toBottomOf="@+id/textView14" />-->
+            <Button
+                android:id="@+id/contact"
+                android:layout_width="150dp"
+                android:layout_height="55dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="40dp"
+                android:background="@color/bg_screen1"
+                android:textColor="#FFF"
+                android:textSize="15sp"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toRightOf="@+id/textView13"
+                app:layout_constraintTop_toBottomOf="@+id/textView12"
+                android:text="Contact" />
 
-        <Button
-            android:id="@+id/btn_location"
-            android:layout_width="150dp"
-            android:layout_height="55dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="40dp"
-            android:background="@color/bg_screen1"
-            android:textColor="#FFF"
-            android:textSize="15sp"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:text="@string/btn_location_lbl"
-            app:layout_constraintLeft_toRightOf="@+id/textView15"
-            app:layout_constraintTop_toBottomOf="@+id/textView14"/>
+            <!--<Spinner
+                android:id="@+id/spinner2"
+                android:layout_width="150dp"
+                android:layout_height="55dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="40dp"
+                android:background="@color/bg_screen1"
+                android:textAlignment="center"
+                app:layout_constraintLeft_toRightOf="@+id/textView13"
+                app:layout_constraintTop_toBottomOf="@+id/textView12" />-->
 
-        <Button
-            android:id="@+id/go"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="wrap_content"
-            android:layout_height="65dp"
-            android:text="GO"
-            app:layout_constraintTop_toBottomOf="@id/textView15"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="20dp"
-            tools:layout_editor_absoluteX="20dp"
-            tools:layout_editor_absoluteY="20dp" />
-    </android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/numberView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFF"
+                android:textSize="15sp"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="40dp"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toRightOf="@+id/contact"
+                app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+            <EditText
+                android:id="@+id/reminderDesc"
+                android:layout_width="300dp"
+                android:layout_height="61dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="40dp"
+                android:hint="@string/reminder_desc"
+                android:textColorHint="#b0adad"
+                android:inputType="text"
+                android:visibility="gone"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#FFF"
+                app:layout_constraintLeft_toRightOf="@+id/textView13"
+                app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:textSize="40sp"
+                app:layout_constraintTop_toBottomOf="@id/textView13"
+                android:textStyle="bold"
+                android:textColor="#fff"
+                android:text="@string/create_label3" />
+
+            <Spinner
+                android:id="@+id/spinner3"
+                android:layout_width="120dp"
+                android:layout_height="55dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="40dp"
+                android:background="@color/bg_screen1"
+                android:textAlignment="center"
+                app:layout_constraintLeft_toRightOf="@+id/textView14"
+                app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+            <!--<Spinner
+                android:id="@+id/spinner4"
+                android:layout_width="50dp"
+                android:layout_height="55dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="40dp"
+                android:background="@color/bg_screen1"
+                android:textAlignment="center"
+                app:layout_constraintLeft_toRightOf="@+id/spinner3"
+                app:layout_constraintTop_toBottomOf="@+id/textView13" />-->
+
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:textSize="40sp"
+                app:layout_constraintTop_toBottomOf="@id/textView14"
+                android:textStyle="bold"
+                android:textColor="#fff"
+                android:text="@string/create_label4" />
+
+            <!--<Spinner
+                android:id="@+id/spinner5"
+                android:layout_width="150dp"
+                android:layout_height="55dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="40dp"
+                android:background="@color/bg_screen1"
+                android:textAlignment="center"
+                app:layout_constraintLeft_toRightOf="@+id/textView15"
+                app:layout_constraintTop_toBottomOf="@+id/textView14" />-->
+
+            <Button
+                android:id="@+id/btn_location"
+                android:layout_width="150dp"
+                android:layout_height="55dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="40dp"
+                android:background="@color/bg_screen1"
+                android:textColor="#FFF"
+                android:textSize="15sp"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:text="@string/btn_location_lbl"
+                app:layout_constraintLeft_toRightOf="@+id/textView15"
+                app:layout_constraintTop_toBottomOf="@+id/textView14"/>
+
+            <Button
+                android:id="@+id/go"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="65dp"
+                android:text="GO"
+                app:layout_constraintTop_toBottomOf="@id/textView15"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="20dp"
+                tools:layout_editor_absoluteX="20dp"
+                tools:layout_editor_absoluteY="20dp" />
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>

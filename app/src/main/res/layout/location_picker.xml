@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center"
     android:padding="50dp"
     android:background="@drawable/repeating_pattern"
@@ -15,6 +16,7 @@
         android:background="@drawable/rounded_button"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
+        style="@style/Button"
         android:textColor="#FFF"
         android:text="@string/location_category_lbl" />
 
@@ -24,6 +26,7 @@
         android:backgroundTint="@color/bg_screen1"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp"
+        style="@style/Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#FFF"
