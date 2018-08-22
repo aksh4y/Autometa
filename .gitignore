@@ -15,3 +15,4 @@ recaptcha_verification.php
 /app/src/release/res/values/google_maps_api.xml
 /app/src/debug/res/values/google_maps_api.xml
 /app/src/main/AndroidManifest.xml
+app/src/main/AndroidManifest.xml
