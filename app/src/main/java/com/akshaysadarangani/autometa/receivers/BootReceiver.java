@@ -1,6 +1,5 @@
 package com.akshaysadarangani.autometa.receivers;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -9,21 +8,15 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.telephony.TelephonyManager;
 import android.util.Log;
-
 import com.akshaysadarangani.autometa.Config;
 import com.akshaysadarangani.autometa.GeofenceErrorMessages;
-import com.akshaysadarangani.autometa.R;
 import com.akshaysadarangani.autometa.services.GeofenceTransitionsJobIntentService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -36,11 +29,9 @@ import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import static com.google.android.gms.location.Geofence.NEVER_EXPIRE;
 
 public class BootReceiver extends BroadcastReceiver implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status>,OnCompleteListener<Void> {
@@ -133,7 +124,7 @@ public class BootReceiver extends BroadcastReceiver implements GoogleApiClient.C
         SharedPreferences sharedPrefs = contextBootReceiver.getSharedPreferences("GEO_PREFS", Context.MODE_PRIVATE);
         String geofencesExist = sharedPrefs.getString("Geofences added", null);
 
-        if (geofencesExist == null && checkPermissions()) {
+        if (geofencesExist != null && checkPermissions()) {
 
             GeofencingClient mGeofencingClient = LocationServices.getGeofencingClient(contextBootReceiver);
             mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())

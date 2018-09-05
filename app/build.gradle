@@ -6,8 +6,8 @@ android {
         applicationId "com.akshaysadarangani.autometa"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 7
-        versionName "1.6"
+        versionCode 8
+        versionName "1.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -33,7 +33,7 @@ dependencies {
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.google.android.gms:play-services-safetynet:15.0.1'
     implementation 'com.android.volley:volley:1.1.0'
-    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+    implementation 'com.facebook.android:facebook-android-sdk:4.33.0'
     implementation 'com.facebook.shimmer:shimmer:0.2.0'
     implementation 'com.h6ah4i.android.widget.verticalseekbar:verticalseekbar:0.7.2'
     implementation 'com.karumi:dexter:5.0.0'

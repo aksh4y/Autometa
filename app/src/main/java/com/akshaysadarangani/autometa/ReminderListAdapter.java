@@ -72,6 +72,8 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
         holder.location.setText("Location: " + reminder.getPlaceName());
         if(reminder.isCompleted())
             v.setBackgroundColor(Color.parseColor("#88eb8d"));
+        else
+            v.setBackgroundColor(Color.WHITE);
 
         /*Glide.with(context)
                 .load(recipe.getThumbnail())
@@ -103,6 +105,7 @@ public class ReminderListAdapter extends RecyclerView.Adapter<ReminderListAdapte
                     default: key = "";
                 }
                 removeGeofence(key);
+                notifyDataSetChanged();
             }
         });
     }

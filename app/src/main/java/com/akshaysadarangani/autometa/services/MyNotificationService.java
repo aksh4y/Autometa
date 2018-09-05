@@ -7,11 +7,14 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.app.TaskStackBuilder;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -22,12 +25,15 @@ import android.widget.Toast;
 
 import com.akshaysadarangani.autometa.GeofenceErrorMessages;
 import com.akshaysadarangani.autometa.MainActivity;
+import com.akshaysadarangani.autometa.SetActivity;
 import com.akshaysadarangani.autometa.SplashActivity;
 import com.akshaysadarangani.autometa.receivers.Button_listener;
 import com.akshaysadarangani.autometa.R;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -45,14 +51,18 @@ public class MyNotificationService extends Service implements OnCompleteListener
     String userID, content, title;
     CountDownTimer timer;
     boolean flag;
+    static int notification_id;
+    static String channel_id;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         userID = intent.getStringExtra("uid");
         content = intent.getStringExtra("content");
-        if(!isNotificationVisible())
+
+      //  if(!isNotificationVisible()) {
             sendNotification(content);
-        return START_NOT_STICKY;
+        //}
+        return START_STICKY;
     }
 
     protected void sendNotification(final String content) {
@@ -63,6 +73,7 @@ public class MyNotificationService extends Service implements OnCompleteListener
         final NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         String channelId = "Autometa_100";
+        String groupId = "Autometa Notifications";
         CharSequence channelName = "Autometa";
 
         int importance = 0;
@@ -80,6 +91,8 @@ public class MyNotificationService extends Service implements OnCompleteListener
             notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
             notificationManager.createNotificationChannel(notificationChannel);
             mBuilder.setChannelId(channelId);
+            /*mBuilder.setGroup(groupId);
+            mBuilder.setGroupSummary(true);*/
         }
 
         final String[] args = content.split("&&");
@@ -87,15 +100,15 @@ public class MyNotificationService extends Service implements OnCompleteListener
         final RemoteViews remoteViews = new RemoteViews(getPackageName(),R.layout.custom_notification);
         switch (args[1]) {
             case "SMS": title = "Send SMS to " + args[2];
-            break;
+                break;
             case "EMAIL": title = "Send Email to " + args[2];
-            break;
+                break;
             default: title = args[2];
         }
         remoteViews.setTextViewText(R.id.notif_title, title);
         remoteViews.setTextViewText(R.id.countdown, "60");
 
-        final int notification_id = 1001;
+        notification_id = 1001 + new Random().nextInt();
 
         Intent button_intent = new Intent(this, Button_listener.class);
         button_intent.putExtra("id",notification_id);
@@ -130,26 +143,25 @@ public class MyNotificationService extends Service implements OnCompleteListener
                 .setPriority(Notification.PRIORITY_MAX)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
+                .setNumber(1)
                 .setContentIntent(pendingIntent);
 
-        // Set the Channel ID for Android O.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mBuilder.setChannelId(channelId); // Channel ID
-        }
-
-        //        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),notification_id,notification_intent,PendingIntent.FLAG_CANCEL_CURRENT);
+        // PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),notification_id,notification_intent,PendingIntent.FLAG_CANCEL_CURRENT);
 
         // Issue the notification
         notificationManager.notify(notification_id, mBuilder.build());
 
         timer = new CountDownTimer(60 * 1000, 1000) {
             public void onTick(long millisUntilFinished) {
+                Log.e("NOTIF_ID: ", Integer.toString(notification_id));
                 remoteViews.setTextViewText(R.id.countdown, Long.toString(millisUntilFinished/1000));
                 startForeground(notification_id, mBuilder.build());
                 flag = true;
             }
 
             public void onFinish() {
+                //Remove geofence
+                removeGeofence(content);
                 if(args[1].equals("SMS")) {
                     sendSMS(args[4], "I am near " + args[3]);
                 }
@@ -170,8 +182,6 @@ public class MyNotificationService extends Service implements OnCompleteListener
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("tasks").child(args[0]);
                 myRef.child("completed").setValue(true);
-                //Remove geofence
-                removeGeofence(content);
                 //stopSelf();
             }
         };
@@ -180,14 +190,25 @@ public class MyNotificationService extends Service implements OnCompleteListener
     }
 
     private void removeGeofence(String requestID) {
+        Log.e("SERVICE", "DELETED GEOFENCE");
+        removeGeofenceFromDb(requestID);
         ArrayList<String> triggeringGeofencesIdsList = new ArrayList<>();
         Collections.addAll(triggeringGeofencesIdsList, requestID.split(", "));
         GeofencingClient mGeofencingClient = LocationServices.getGeofencingClient(this);
         mGeofencingClient.removeGeofences(triggeringGeofencesIdsList).addOnCompleteListener(this);
     }
 
+    private void removeGeofenceFromDb(String key) {
+        SharedPreferences pref = getSharedPreferences("GEOFENCES_DB", MODE_PRIVATE);
+        SharedPreferences.Editor editor = getSharedPreferences("GEOFENCES_DB", MODE_PRIVATE).edit();
+        if(pref.contains(key)) {
+            editor.remove(key);
+            editor.apply();
+        }
+    }
+
     private boolean isNotificationVisible() {
-       return flag;
+        return flag;
     }
 
     @Override
@@ -207,11 +228,17 @@ public class MyNotificationService extends Service implements OnCompleteListener
     public void onComplete(@NonNull Task<Void> task) {
         if (task.isSuccessful()) {
             //sendNotification(geofenceTransitionDetails);
-            Log.e("SERVICE", "DELETED GEOFENCE");
         } else {
             // Get the status code for the error and log it using a user-friendly message.
             String errorMessage = GeofenceErrorMessages.getErrorString(this, task.getException());
             Log.w("NotificationService", errorMessage);
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(MyNotificationService.this.getApplicationContext(),"An error occurred",Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
@@ -219,9 +246,15 @@ public class MyNotificationService extends Service implements OnCompleteListener
         try {
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(phoneNo, null, msg, null, null);
-        } catch (Exception ex) {
-            Toast.makeText(getApplicationContext(),ex.getMessage().toString(),
-                    Toast.LENGTH_LONG).show();
+        } catch (final Exception ex) {
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(MyNotificationService.this,ex.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                }
+            });
             ex.printStackTrace();
         }
     }
